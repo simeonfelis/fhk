@@ -72,8 +72,8 @@
               <object class="GtkEntry" id="entryUsername">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+                <property name="is_focus">True</property>
                 <property name="invisible_char">&#x2022;</property>
-                <property name="text" translatable="yes">fes37620.0.stud.fh-regensburg.de</property>
                 <signal name="changed" handler="on_entryUsername_changed"/>
               </object>
               <packing>
@@ -99,10 +99,12 @@
                 <property name="homogeneous">True</property>
                 <child>
                   <object class="GtkCheckButton" id="checkbuttonMount_F">
-                    <property name="label" translatable="yes">F</property>
+                    <property name="label" translatable="yes">_F</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
+                    <property name="tooltip_text" translatable="yes">Software f&#xFC;r die HS Regensburg</property>
+                    <property name="use_underline">True</property>
                     <property name="draw_indicator">True</property>
                     <signal name="toggled" handler="on_checkbuttonMounts_toggled"/>
                   </object>
@@ -112,10 +114,12 @@
                 </child>
                 <child>
                   <object class="GtkCheckButton" id="checkbuttonMount_G">
-                    <property name="label" translatable="yes">G</property>
+                    <property name="label" translatable="yes">_G</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
+                    <property name="tooltip_text" translatable="yes">Pers&#xF6;nlicher Ordner</property>
+                    <property name="use_underline">True</property>
                     <property name="draw_indicator">True</property>
                     <signal name="toggled" handler="on_checkbuttonMounts_toggled"/>
                   </object>
@@ -125,10 +129,12 @@
                 </child>
                 <child>
                   <object class="GtkCheckButton" id="checkbuttonMount_H">
-                    <property name="label" translatable="yes">H</property>
+                    <property name="label" translatable="yes">_H</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
+                    <property name="tooltip_text" translatable="yes">&#xDC;bergreifender Ordner f&#xFC;r Fachbereiche und Labore</property>
+                    <property name="use_underline">True</property>
                     <property name="draw_indicator">True</property>
                     <signal name="toggled" handler="on_checkbuttonMounts_toggled"/>
                   </object>
@@ -138,10 +144,12 @@
                 </child>
                 <child>
                   <object class="GtkCheckButton" id="checkbuttonMount_K">
-                    <property name="label" translatable="yes">K</property>
+                    <property name="label" translatable="yes">_K</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
+                    <property name="tooltip_text" translatable="yes">K-Laufwerk der Dozenten</property>
+                    <property name="use_underline">True</property>
                     <property name="draw_indicator">True</property>
                     <signal name="toggled" handler="on_checkbuttonMounts_toggled"/>
                   </object>
@@ -151,10 +159,12 @@
                 </child>
                 <child>
                   <object class="GtkCheckButton" id="checkbuttonMount_P">
-                    <property name="label" translatable="yes">P</property>
+                    <property name="label" translatable="yes">_P</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
+                    <property name="tooltip_text" translatable="yes">Projektlaufwerk</property>
+                    <property name="use_underline">True</property>
                     <property name="draw_indicator">True</property>
                     <signal name="toggled" handler="on_checkbuttonMounts_toggled"/>
                   </object>
@@ -906,8 +916,7 @@
                     <property name="label">gtk-connect</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="can_default">True</property>
-                    <property name="receives_default">True</property>
+                    <property name="receives_default">False</property>
                     <property name="tooltip_text" translatable="yes">Gew&#xE4;hlte Laufwerke einbinden</property>
                     <property name="use_stock">True</property>
                     <signal name="clicked" handler="on_btn_connect_clicked"/>
@@ -920,11 +929,13 @@
                 </child>
                 <child>
                   <object class="GtkButton" id="btn_umount">
-                    <property name="label" translatable="yes">Aush&#xE4;ngen</property>
+                    <property name="label" translatable="yes">_Aush&#xE4;ngen</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
+                    <property name="receives_default">False</property>
                     <property name="tooltip_text" translatable="yes">Alle eingebunden Laufwerke auswerfen</property>
+                    <property name="image">image_unmount</property>
+                    <property name="use_underline">True</property>
                     <signal name="clicked" handler="on_btn_umount_clicked"/>
                   </object>
                   <packing>
@@ -938,8 +949,8 @@
                     <property name="label">gtk-quit</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">Eingh&#xE4;ngte Verzeichnisse werden nicht ausgeworfen!</property>
+                    <property name="receives_default">False</property>
+                    <property name="tooltip_text" translatable="yes">Ohne die eingh&#xE4;ngten Verzeichnisse auszuwerfen beenden</property>
                     <property name="use_stock">True</property>
                     <signal name="clicked" handler="on_btn_cancel_clicked"/>
                   </object>
@@ -963,5 +974,9 @@
         </child>
       </object>
     </child>
+  </object>
+  <object class="GtkImage" id="image_unmount">
+    <property name="visible">True</property>
+    <property name="stock">gtk-disconnect</property>
   </object>
 </interface>

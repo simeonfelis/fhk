@@ -279,36 +279,36 @@ class Fhk:
 		gtk.main()
 
 	def __init__(self):
-		program=gnome.program_init(app_id="fhk",
-		                           app_version="0.1 beta")#,
-		                           #module_info=[])#,
-		                           #argc=len(sys.argv))#,
-		                           #argv=sys.argv)
-
-
-		client = gconf.client_get_default()
-		clientPath = gnome.gconf_get_app_settings_relative(program, "")
-		client.add_dir(dir=clientPath,
-		               preload=gconf.CLIENT_PRELOAD_NONE)
-
-		try:
-			test = client.get_int("test")
-			print test
-		except:
-			print "couldn't retrieve key"
-		try:
-			value = gconf.value_new(GCONF_VALUE_INT)
-		except:
-			print "no success value new"
-
-		try:
-			gconf.value_set(value, 42)
-		except:
-			print "no  success value set"
-		try:
-			client.set_int("apps/fhk/test", 42)
-		except:
-			print "no successset_int"
+#		program=gnome.program_init(app_id="fhk",
+#		                           app_version="0.1 beta")#,
+#		                           #module_info=[])#,
+#		                           #argc=len(sys.argv))#,
+#		                           #argv=sys.argv)
+#
+#
+#		client = gconf.client_get_default()
+#		clientPath = gnome.gconf_get_app_settings_relative(program, "")
+#		client.add_dir(dir=clientPath,
+#		               preload=gconf.CLIENT_PRELOAD_NONE)
+#
+#		try:
+#			test = client.get_int("test")
+#			print test
+#		except:
+#			print "couldn't retrieve key"
+#		try:
+#			value = gconf.value_new(GCONF_VALUE_INT)
+#		except:
+#			print "no success value new"
+#
+#		try:
+#			gconf.value_set(value, 42)
+#		except:
+#			print "no  success value set"
+#		try:
+#			client.set_int("apps/fhk/test", 42)
+#		except:
+#			print "no successset_int"
 
 
 
