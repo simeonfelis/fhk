@@ -4,7 +4,7 @@
   <!-- interface-naming-policy project-wide -->
   <object class="GtkWindow" id="window">
     <property name="border_width">10</property>
-    <property name="title" translatable="yes">fhk</property>
+    <property name="title" translatable="yes">fhk (ALPHA version)</property>
     <property name="window_position">center</property>
     <property name="default_width">100</property>
     <property name="default_height">30</property>

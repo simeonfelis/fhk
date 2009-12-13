@@ -4,6 +4,11 @@ Vorraussetzungen:
 	ncpfs
 
 Achtung!
+Dieses Programm ist noch sehr stark in Entwicklung. Es ist noch im Alpha-Status. 
+Es können ernsthafte Probleme durch die Benutzung dieses noch nicht fertigen Programms
+entstehen!
+
+Hinweis:
 In Ubuntu 7.10, 8.04, 8.10, 9.04, 9.10  ist ncpfs fehlerhaft. Siehe Bugreport
 https://bugs.launchpad.net/ubuntu/+source/ncpfs/+bug/140464
 
