@@ -2,13 +2,17 @@ Vorraussetzungen:
 	python
 	pygtk
 	ncpfs
-	
-In Ubuntu 9.04 ist ncpfs fehlerhaft. Folgendes Paket funktioniert:
+
+Achtung!
+In Ubuntu 7.10, 8.04, 8.10, 9.04, 9.10  ist ncpfs fehlerhaft. Siehe Bugreport
+https://bugs.launchpad.net/ubuntu/+source/ncpfs/+bug/140464
+
+Folgendes Paket funktioniert:
 http://archive.ubuntu.com/ubuntu/pool/universe/n/ncpfs/ncpfs_2.2.6-4ubuntu3_i386.deb
 64 Bit:
 http://archive.ubuntu.com/ubuntu/pool/universe/n/ncpfs/ncpfs_2.2.6-4ubuntu3_amd64.deb
 
-    Uni-Interne IP (VPN)
+Es wird eine Uni-Interne IP (VPN) benötigt!
 
 Ausführen:
 	cd <entpacktes verzeichnis>/fhk/src

@@ -11,17 +11,15 @@ import fcntl
 import struct
 import array
 import re
+import gnome
+import gconf
+import sys
 
 class Par:
 	def __init__(self):
-#		self.volume='DATA3/kurs'	# -V
-#		self.volume_k='DATA3/kurs'
-#		self.volume_h='DATA1/fb'
 		self.username=''			# -U
-#		self.server='fh-kroesus'	# -S
 		self.codepage='cp850'		# -p
 		self.charset='utf8'			# -y
-#		self.dns_name='fh-kroesus.fh-regensburg.de'	# -A
 		self.noupcasepasswd=True	# -C
 		self.multiple=True			# -m
 
@@ -31,31 +29,31 @@ class Par:
 		               'G': True,
 		               'H': False,
 		               'K': False,
-					   'P': False}
+		               'P': False}
 
 		self.paths = {'F': os.path.expanduser('~/F'),
 		              'G': os.path.expanduser('~/G'),
 		              'H': os.path.expanduser('~/H'),
 		              'K': os.path.expanduser('~/K'),
-					  'P': os.path.expanduser('~/P')}
+		              'P': os.path.expanduser('~/P')}
 
 		self.volumes = {'F': 'soft1',
 		                'G': '',    # Extracted from login name
 		                'H': 'DATA1/fb',
 		                'K': 'DATA3/kurs',
-						'P': 'DATA2/Projekt'}
+		                'P': 'DATA2/Projekt'}
 
 		self.servers = {'F': 'fh-saturn1',
 		                'G': '',
 		                'H': 'fh-kroesus',
 		                'K': 'fh-kroesus',
-						'P': 'fh-kroesus'}
+		                'P': 'fh-kroesus'}
 
 		self.dns_names = {'F': 'fh-saturn1.fh-regensburg.de',
 		                  'G': '', # Extracted from login name
 		                  'H': 'fh-kroesus.fh-regensburg.de',
 		                  'K': 'fh-kroesus.fh-regensburg.de',
-						  'P': 'fh-kroesus.fh-regensburg.de'}
+		                  'P': 'fh-kroesus.fh-regensburg.de'}
 
 
 
@@ -148,7 +146,7 @@ class Fhk:
 		#print name
 		#parted = re.match(r"(?P<short_name>^\w{3}\d{5})\.(?P<context_number>\d)\.(?P<context_type>.+)\.(?P<context_end>[f|h][h|s]-regensburg\.de)$", name)
 		#print parted.groupdict()
-		
+
 		entryVolume_G = self.builder.get_object("entryVolume_G")
 		entryServer_G = self.builder.get_object("entryServer_G")
 		entryDNSName_G = self.builder.get_object("entryDNSName_G")
@@ -166,14 +164,14 @@ class Fhk:
 			entryVolume_G.set_text("user" + ctxt_nmbr.group(0) + "/" + ctxt_nmbr.group(0) + "/" + short_name.group(0))
 			entryDNSName_G.set_text("fh-mars-user" + ctxt_nmbr.group(0) + ".hs-regensburg.de")
 			entryServer_G.set_text("hs-mars")
-			
+
 			# When every context found, enable the Connect button
 			ctxt_typ.group(0)
 			ctxt_end.group(0)
 			self.btnConnect.set_sensitive(True)
-			
+
 		except:
-			print "No full Novell context found" 
+			print "No full Novell context found"
 			self.btnConnect.set_sensitive(False)
 
 	def on_checkbuttonMounts_toggled(self, widget, data=None):
@@ -233,7 +231,7 @@ class Fhk:
 				except:
 					print "invalid arguments on ncpmount"
 					continue
-				
+
 				print drive + " mounted"
 
 			if success:
@@ -281,6 +279,39 @@ class Fhk:
 		gtk.main()
 
 	def __init__(self):
+		program=gnome.program_init(app_id="fhk",
+		                           app_version="0.1 beta")#,
+		                           #module_info=[])#,
+		                           #argc=len(sys.argv))#,
+		                           #argv=sys.argv)
+
+
+		client = gconf.client_get_default()
+		clientPath = gnome.gconf_get_app_settings_relative(program, "")
+		client.add_dir(dir=clientPath,
+		               preload=gconf.CLIENT_PRELOAD_NONE)
+
+		try:
+			test = client.get_int("test")
+			print test
+		except:
+			print "couldn't retrieve key"
+		try:
+			value = gconf.value_new(GCONF_VALUE_INT)
+		except:
+			print "no success value new"
+
+		try:
+			gconf.value_set(value, 42)
+		except:
+			print "no  success value set"
+		try:
+			client.set_int("apps/fhk/test", 42)
+		except:
+			print "no successset_int"
+
+
+
 		self.builder = gtk.Builder()
 		self.builder.add_from_file("window.xml")
 		self.builder.connect_signals(self)
