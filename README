@@ -1,0 +1,17 @@
+Vorraussetzungen:
+	python
+	pygtk
+	ncpfs
+	
+In Ubuntu 9.04 ist ncpfs fehlerhaft. Folgendes Paket funktioniert:
+http://archive.ubuntu.com/ubuntu/pool/universe/n/ncpfs/ncpfs_2.2.6-4ubuntu3_i386.deb
+64 Bit:
+http://archive.ubuntu.com/ubuntu/pool/universe/n/ncpfs/ncpfs_2.2.6-4ubuntu3_amd64.deb
+
+    Uni-Interne IP (VPN)
+
+Ausführen:
+	cd <entpacktes verzeichnis>/fhk/src
+	python fhk.py
+	
+	
