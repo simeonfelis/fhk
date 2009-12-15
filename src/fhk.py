@@ -31,8 +31,8 @@ import fcntl
 import struct
 import array
 import re
-import gnome
-import gconf
+#import gnome
+#import gconf
 import sys
 
 class Par:
