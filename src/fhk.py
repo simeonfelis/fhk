@@ -288,7 +288,9 @@ class Fhk:
 									  flags=gtk.DIALOG_MODAL,
 									  type=gtk.MESSAGE_WARNING,
 									  buttons=gtk.BUTTONS_CLOSE,
-									  message_format="Laufwerke koennen nicht ausgehaengt werden")
+									  message_format=
+"""Laufwerke koennen nicht ausgehaengt werden.
+Versuchen Sie es nochmal""")
 				swin=gtk.ScrolledWindow()
 				swin.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
 #				swin.add_with_viewport(view)
