@@ -171,7 +171,7 @@ class Fhk:
 		entryServer_G = self.builder.get_object("entryServer_G")
 		entryDNSName_G = self.builder.get_object("entryDNSName_G")
 
-		exp = re.compile(r"(^\w{3}\d{5})")
+		exp = re.compile(r"(^\.{0,1}\w{3}\d{5})")
 		short_name = exp.search(name)
 		exp = re.compile(r"(?<=\w{3}\d{5}\.)(\d)")
 		number = exp.search(name)
@@ -181,7 +181,11 @@ class Fhk:
 		context = exp.search(name)
 
 		try:
-			entryVolume_G.set_text("user" + number.group(0) + "/" + number.group(0) + "/" + short_name.group(0))
+			if short_name.group(0)[0] == '.':
+				short_name = short_name.group(0)[1:]
+			else:
+				short_name = short_name.group(0)
+			entryVolume_G.set_text("user" + number.group(0) + "/" + number.group(0) + "/" + short_name)
 			entryDNSName_G.set_text("fh-mars-user" + number.group(0) + ".hs-regensburg.de")
 			entryServer_G.set_text("hs-mars")
 

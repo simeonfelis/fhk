@@ -415,7 +415,7 @@
                                       <object class="GtkEntry" id="entryVolume_G">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
-                                        <property name="tooltip_text" translatable="yes">Wird aus Benutzerkontext ermittelt</property>
+                                        <property name="tooltip_text" translatable="yes">Wird aus NDS-Kennung ermittelt</property>
                                         <property name="invisible_char">&#x2022;</property>
                                       </object>
                                       <packing>
@@ -429,7 +429,7 @@
                                       <object class="GtkEntry" id="entryServer_G">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
-                                        <property name="tooltip_text" translatable="yes">Wird aus Benutzerkontext ermittelt</property>
+                                        <property name="tooltip_text" translatable="yes">Wird aus NDS-Kennung ermittelt</property>
                                         <property name="invisible_char">&#x2022;</property>
                                       </object>
                                       <packing>
@@ -443,7 +443,7 @@
                                       <object class="GtkEntry" id="entryDNSName_G">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
-                                        <property name="tooltip_text" translatable="yes">Wird aus Benutzerkontext ermittelt</property>
+                                        <property name="tooltip_text" translatable="yes">Wird aus NDS-Kennung ermittelt</property>
                                         <property name="invisible_char">&#x2022;</property>
                                       </object>
                                       <packing>
