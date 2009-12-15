@@ -208,10 +208,10 @@ class Fhk:
 	def on_btn_connect_clicked(self, widget, data=None):
 		if self.entryPassword.get_text() == "":
 			a = gtk.MessageDialog(parent=None,
-								  flags=gtk.DIALOG_MODAL,
-								  type=gtk.MESSAGE_ERROR,
-								  buttons=gtk.BUTTONS_CLOSE,
-								  message_format="Kein Passwort angegeben")
+			                      flags=gtk.DIALOG_MODAL,
+			                      type=gtk.MESSAGE_ERROR,
+			                      buttons=gtk.BUTTONS_CLOSE,
+			                      message_format="Kein Passwort angegeben")
 			a.show()
 			a.run()
 			a.destroy()
@@ -279,9 +279,25 @@ class Fhk:
 			if os.path.ismount(self.entryPathHandles[drive].get_text()):
 				tmpError = True
 
-		if not tmpError:
+		if not tmpError: #Wenn kein Fehler aufgetreten ist
 			self.btnDisconnect.set_sensitive(False)
 			self.btnConnect.set_sensitive(True)
+		else:
+
+				a = gtk.MessageDialog(parent = None,
+									  flags=gtk.DIALOG_MODAL,
+									  type=gtk.MESSAGE_WARNING,
+									  buttons=gtk.BUTTONS_CLOSE,
+									  message_format="Laufwerke koennen nicht ausgehaengt werden")
+				swin=gtk.ScrolledWindow()
+				swin.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+#				swin.add_with_viewport(view)
+				swin.show_all()
+
+				a.vbox.pack_start(swin)
+				a.show()
+				a.run()
+				a.destroy()
 
 
 	def on_btn_cancel_clicked(self, widget, data=None):
