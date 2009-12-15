@@ -24,10 +24,14 @@ Ausführen:
 	python fhk.py
 
 
-Wer?
-Für Studenten der FH Regensburg. Bedienstete und Uni-Studenten sind noch nicht
+Für Wen?
+Für Studenten der FH Regensburg (Alles hoch inoffiziell). Bedienstete und Uni-Studenten sind noch nicht
 implementiert.
 D.h. man braucht folgenden Kontext:
 	abc12345.6.stud.fh-regensburg.de
 	           ----
+
+
+Wer?
+Simeon Felis. Fragen, Probleme, Patches, Ideen bitte an simeonfelis@googlemail.com
 
