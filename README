@@ -4,7 +4,7 @@ Vorraussetzungen:
 	ncpfs
 
 Achtung!
-Dieses Programm ist noch sehr stark in Entwicklung. Es ist noch im Alpha-Status. 
+Dieses Programm ist noch sehr stark in Entwicklung. Es ist noch im Alpha-Status.
 Es können ernsthafte Probleme durch die Benutzung dieses noch nicht fertigen Programms
 entstehen!
 
@@ -22,5 +22,12 @@ Es wird eine Uni-Interne IP (VPN) benötigt!
 Ausführen:
 	cd <entpacktes verzeichnis>/fhk/src
 	python fhk.py
-	
-	
+
+
+Wer?
+Für Studenten der FH Regensburg. Bedienstete und Uni-Studenten sind noch nicht
+implementiert.
+D.h. man braucht folgenden Kontext:
+	abc12345.6.stud.fh-regensburg.de
+	           ----
+

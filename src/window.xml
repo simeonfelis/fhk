@@ -35,6 +35,7 @@
             <child>
               <object class="GtkLabel" id="label1">
                 <property name="visible">True</property>
+                <property name="tooltip_text" translatable="yes">In der Form abc12345.6.stud.fh-regensburg.de</property>
                 <property name="xalign">1</property>
                 <property name="label" translatable="yes">NDS Kennung:</property>
               </object>
@@ -45,6 +46,7 @@
             <child>
               <object class="GtkLabel" id="label2">
                 <property name="visible">True</property>
+                <property name="tooltip_text" translatable="yes">Aktuelles NDS-Kennwort. Man hat f&#xFC;nf Versuche bis man gesperrt wird</property>
                 <property name="xalign">1</property>
                 <property name="label" translatable="yes">Passwort:</property>
               </object>
@@ -58,6 +60,7 @@
               <object class="GtkEntry" id="entryPassword">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+                <property name="tooltip_text" translatable="yes">Aktuelles NDS-Kennwort. Man hat f&#xFC;nf Versuche bis man gesperrt wird</property>
                 <property name="visibility">False</property>
                 <property name="invisible_char">&#x2022;</property>
               </object>
@@ -73,6 +76,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="is_focus">True</property>
+                <property name="tooltip_text" translatable="yes">In der Form abc12345.6.stud.fh-regensburg.de</property>
                 <property name="invisible_char">&#x2022;</property>
                 <signal name="changed" handler="on_entryUsername_changed"/>
               </object>
@@ -411,6 +415,7 @@
                                       <object class="GtkEntry" id="entryVolume_G">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
+                                        <property name="tooltip_text" translatable="yes">Wird aus Benutzerkontext ermittelt</property>
                                         <property name="invisible_char">&#x2022;</property>
                                       </object>
                                       <packing>
@@ -424,6 +429,7 @@
                                       <object class="GtkEntry" id="entryServer_G">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
+                                        <property name="tooltip_text" translatable="yes">Wird aus Benutzerkontext ermittelt</property>
                                         <property name="invisible_char">&#x2022;</property>
                                       </object>
                                       <packing>
@@ -437,6 +443,7 @@
                                       <object class="GtkEntry" id="entryDNSName_G">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
+                                        <property name="tooltip_text" translatable="yes">Wird aus Benutzerkontext ermittelt</property>
                                         <property name="invisible_char">&#x2022;</property>
                                       </object>
                                       <packing>

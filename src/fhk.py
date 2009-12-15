@@ -3,7 +3,7 @@
 # Copyright (c) 2009 by Simeon Felis <simeonfelis@googlemail.com>
 #
 # This program is free software; you can redistribute it and/or modify it
-# under the terms of the GNU General Public License as published by the 
+# under the terms of the GNU General Public License as published by the
 # Free Software Foundation.
 #
 # This program is distributed in the hope that it will be useful,
@@ -174,24 +174,24 @@ class Fhk:
 		exp = re.compile(r"(^\w{3}\d{5})")
 		short_name = exp.search(name)
 		exp = re.compile(r"(?<=\w{3}\d{5}\.)(\d)")
-		ctxt_nmbr = exp.search(name)
+		number = exp.search(name)
 		exp = re.compile(r"(?<=\w{3}\d{5}\.\d\.)(\w+)")
-		ctxt_typ = exp.search(name)
+		type = exp.search(name)
 		exp = re.compile(r"[f|h][h|s]-regensburg.de$")
-		ctxt_end = exp.search(name)
+		context = exp.search(name)
 
 		try:
-			entryVolume_G.set_text("user" + ctxt_nmbr.group(0) + "/" + ctxt_nmbr.group(0) + "/" + short_name.group(0))
-			entryDNSName_G.set_text("fh-mars-user" + ctxt_nmbr.group(0) + ".hs-regensburg.de")
+			entryVolume_G.set_text("user" + number.group(0) + "/" + number.group(0) + "/" + short_name.group(0))
+			entryDNSName_G.set_text("fh-mars-user" + number.group(0) + ".hs-regensburg.de")
 			entryServer_G.set_text("hs-mars")
 
-			# When every context found, enable the Connect button
-			ctxt_typ.group(0)
-			ctxt_end.group(0)
+			# When full context found, enable the Connect button
+			type.group(0)
+			context.group(0)
 			self.btnConnect.set_sensitive(True)
 
 		except:
-			print "No full Novell context found"
+			print "No full name context found"
 			self.btnConnect.set_sensitive(False)
 
 	def on_checkbuttonMounts_toggled(self, widget, data=None):
