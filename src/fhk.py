@@ -37,11 +37,11 @@ import sys
 
 class Par:
 	def __init__(self):
-		self.username=''			# -U
-		self.codepage='cp850'		# -p
-		self.charset='utf8'			# -y
-		self.noupcasepasswd=True	# -C
-		self.multiple=True			# -m
+		self.username=''                # -U
+		self.codepage='cp850'           # -p
+		self.charset='utf8'             # -y
+		self.noupcasepasswd=True        # -C
+		self.multiple=True              # -m
 
 		self.drives = ['F', 'G', 'H', 'K', 'P']
 
@@ -86,13 +86,12 @@ class Fhk:
 		bytes = max_possible * 32
 		s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 		names = array.array('B', '\0' * bytes)
-		outbytes = struct.unpack('iL', fcntl.ioctl(
-												s.fileno(),
-												0x8912,  # SIOCGIFCONF
-												struct.pack('iL',
-														bytes,
-														names.buffer_info()[0])
-												))[0]
+		outbytes = struct.unpack('iL', fcntl.ioctl(s.fileno(),
+		                                           0x8912,  # SIOCGIFCONF
+		                                           struct.pack('iL',
+		                                                       bytes,
+		                                                       names.buffer_info()[0])
+		                                           ))[0]
 		namestr = names.tostring()
 		interfaces = [namestr[i:i+32].split('\0', 1)[0] for i in range(0, outbytes, 32)]
 		print "Found following interfaces: "
@@ -102,12 +101,9 @@ class Fhk:
 		for face in interfaces:
 			if (face != "lo"):		# don't check loopback
 				s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-				ipAddress=socket.inet_ntoa(
-										fcntl.ioctl(
-												s.fileno(),
-												0x8915,
-												struct.pack('256s', face)
-												)[20:24])
+				ipAddress=socket.inet_ntoa(fcntl.ioctl(s.fileno(),
+				                                       0x8915,
+				                                       struct.pack('256s', face))[20:24])
 				#FIXME: IP check always TRUE!
 				if (cmp(ipAddress[:10], '194.94.155') == 0 or cmp(ipAddress[:7], '172.16.' == 0)):			# HS Regensburg Bibliothek IP
 					print "Using interface " + face + " with IP " + ipAddress
@@ -232,16 +228,16 @@ class Fhk:
 					continue #jump over that drive
 				try:
 					tmpCall = ["ncpmount",
-							   "-V", self.entryVolumeHandles[drive].get_text(),
-							   "-S", self.entryServerHandles[drive].get_text(),
-							   "-A", self.entryDNSNameHandles[drive].get_text(),
-							   "-U", self.entryUsername.get_text(),
-							   "-P", self.entryPassword.get_text(),
-							   "-p", self.entryCodepage.get_text(),
-							   "-y", self.entryCharset.get_text(),
-							   "-r", "2",
-							   "-C", "-m",
-							   self.entryPathHandles[drive].get_text()]
+					           "-V", self.entryVolumeHandles[drive].get_text(),
+					           "-S", self.entryServerHandles[drive].get_text(),
+					           "-A", self.entryDNSNameHandles[drive].get_text(),
+					           "-U", self.entryUsername.get_text(),
+					           "-P", self.entryPassword.get_text(),
+					           "-p", self.entryCodepage.get_text(),
+					           "-y", self.entryCharset.get_text(),
+					           "-r", "2",
+					           "-C", "-m",
+					           self.entryPathHandles[drive].get_text()]
 					#print "Calling "
 					#for i in tmpCall:
 					#	print "    " + i
@@ -284,22 +280,22 @@ class Fhk:
 			self.btnConnect.set_sensitive(True)
 		else:
 
-				a = gtk.MessageDialog(parent = None,
-									  flags=gtk.DIALOG_MODAL,
-									  type=gtk.MESSAGE_WARNING,
-									  buttons=gtk.BUTTONS_CLOSE,
-									  message_format=
+			a = gtk.MessageDialog(parent = None,
+			                      flags=gtk.DIALOG_MODAL,
+			                      type=gtk.MESSAGE_WARNING,
+			                      buttons=gtk.BUTTONS_CLOSE,
+			                      message_format=
 """Laufwerke koennen nicht ausgehaengt werden.
 Versuchen Sie es nochmal""")
-				swin=gtk.ScrolledWindow()
-				swin.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-#				swin.add_with_viewport(view)
-				swin.show_all()
+			swin=gtk.ScrolledWindow()
+			swin.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+#			swin.add_with_viewport(view)
+			swin.show_all()
 
-				a.vbox.pack_start(swin)
-				a.show()
-				a.run()
-				a.destroy()
+			a.vbox.pack_start(swin)
+			a.show()
+			a.run()
+			a.destroy()
 
 
 	def on_btn_cancel_clicked(self, widget, data=None):
@@ -378,17 +374,17 @@ Versuchen Sie es nochmal""")
 		self.expanderHandles = {}
 		for drive in self.par.drives:
 			self.entryPathHandles.setdefault( drive,
-			    self.builder.get_object("entryPath_" + drive) )
+				self.builder.get_object("entryPath_" + drive) )
 			self.entryVolumeHandles.setdefault( drive,
-			    self.builder.get_object("entryVolume_" + drive) )
+				self.builder.get_object("entryVolume_" + drive) )
 			self.entryServerHandles.setdefault( drive,
-			    self.builder.get_object("entryServer_" + drive) )
+				self.builder.get_object("entryServer_" + drive) )
 			self.entryDNSNameHandles.setdefault( drive,
-			    self.builder.get_object("entryDNSName_" + drive) )
+				self.builder.get_object("entryDNSName_" + drive) )
 			self.checkbuttonHandles.setdefault( drive,
-			    self.builder.get_object("checkbuttonMount_" + drive) )
+				self.builder.get_object("checkbuttonMount_" + drive) )
 			self.expanderHandles.setdefault(drive,
-			    self.builder.get_object("expander_" + drive) )
+				self.builder.get_object("expander_" + drive) )
 
 		#init gui
 		self.entryCodepage.set_text(self.par.codepage)
