@@ -225,7 +225,7 @@ class Fhk:
 		for drive in self.par.drives:
 			if self.par.mounts[drive]:
 				if not self.pathCreate(self.entryPathHandles[drive].get_text()):
-					continue #jump over that drive
+					continue #jump over that drive if path creation fails
 				try:
 					tmpCall = ["ncpmount",
 					           "-V", self.entryVolumeHandles[drive].get_text(),
