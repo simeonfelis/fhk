@@ -167,30 +167,63 @@ class Fhk:
 		entryServer_G = self.builder.get_object("entryServer_G")
 		entryDNSName_G = self.builder.get_object("entryDNSName_G")
 
+		# get the short name: include zero or one "." at the beginning, 
+		# 3 letters and 5 digits
 		exp = re.compile(r"(^\.{0,1}\w{3}\d{5})")
 		short_name = exp.search(name)
-		exp = re.compile(r"(?<=\w{3}\d{5}\.)(\d)")
-		number = exp.search(name)
-		exp = re.compile(r"(?<=\w{3}\d{5}\.\d\.)(\w+)")
-		type = exp.search(name)
-		exp = re.compile(r"[f|h][h|s]-regensburg.de$")
-		context = exp.search(name)
-
 		try:
 			if short_name.group(0)[0] == '.':
 				short_name = short_name.group(0)[1:]
 			else:
 				short_name = short_name.group(0)
-			entryVolume_G.set_text("user" + number.group(0) + "/" + number.group(0) + "/" + short_name)
-			entryDNSName_G.set_text("fh-mars-user" + number.group(0) + ".hs-regensburg.de")
-			entryServer_G.set_text("hs-mars")
-
-			# When full context found, enable the Connect button
-			type.group(0)
-			context.group(0)
-			self.btnConnect.set_sensitive(True)
-
 		except:
+			short_name = ""
+
+		# get the single digit after the short name
+		exp = re.compile(r"(?<=\w{3}\d{5}\.)(\d)")
+		group_number = exp.search(name)
+		try:
+			group_number = group_number.group(0)
+		except:
+			group_number = ""
+
+		# get the role.fh-regensburg.de
+		exp = re.compile(r"[\w|-]+\.\w{2}-regensburg.de$")           
+		role = exp.search(name)
+		try:
+			role = role.group(0)
+		except:
+			role = ""
+
+		# get the last context
+		exp = re.compile(r"[f|h][h|s]-regensburg.de$")
+		context = exp.search(name)
+		try:
+			context = context.group(0)
+		except:
+			context = ""
+		
+		print "short_name: " + short_name
+		print "role: " + role
+		print "group_number " + group_number
+		print "context: " + context
+
+		entryVolume_G.set_text("user/" + short_name)
+		
+		if group_number == "":
+			entryVolume_G.set_text("user" + "/" + short_name)
+			entryDNSName_G.set_text("fh-mars-user" + ".hs-regensburg.de")
+		else:
+			entryVolume_G.set_text("user" + group_number + "/" + group_number + "/" + short_name)
+			entryDNSName_G.set_text("fh-mars-user" + group_number + ".hs-regensburg.de")
+			entryServer_G.set_text("hs-mars")
+			
+		# When full context found, enable the Connect button			
+		if not role == "" and not short_name == "" and not context == "":
+			self.btnConnect.set_sensitive(True)
+			self.entryUsername.set_secondary_icon_stock = None
+			
+		else:
 			print "No full name context found"
 			self.btnConnect.set_sensitive(False)
 
@@ -401,6 +434,7 @@ Versuchen Sie es nochmal""")
 			if os.path.ismount( self.par.paths[drive] ):
 				print drive + " aready mounted"
 				self.btnDisconnect.set_sensitive(True)
+		
 		# try to fill in G drive parameters:
 		self.on_entryUsername_changed(self.entryUsername)
 

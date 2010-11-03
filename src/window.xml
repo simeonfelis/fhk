@@ -1,18 +1,16 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <!-- interface-requires gtk+ 2.12 -->
+  <requires lib="gtk+" version="2.16"/>
   <!-- interface-naming-policy project-wide -->
   <object class="GtkWindow" id="window">
+    <property name="width_request">500</property>
     <property name="border_width">10</property>
     <property name="title" translatable="yes">fhk (ALPHA version)</property>
     <property name="window_position">center</property>
-    <property name="default_width">100</property>
-    <property name="default_height">30</property>
     <signal name="destroy" handler="on_window_destroy"/>
     <child>
       <object class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
-        <property name="orientation">vertical</property>
         <child>
           <object class="GtkLabel" id="labelWarning">
             <property name="sensitive">False</property>
@@ -46,7 +44,7 @@
             <child>
               <object class="GtkLabel" id="label2">
                 <property name="visible">True</property>
-                <property name="tooltip_text" translatable="yes">Aktuelles NDS-Kennwort. Man hat f&#xFC;nf Versuche bis man gesperrt wird</property>
+                <property name="tooltip_text" translatable="yes">Aktuelles NDS-Kennwort. Man hat fünf Versuche bis man gesperrt wird</property>
                 <property name="xalign">1</property>
                 <property name="label" translatable="yes">Passwort:</property>
               </object>
@@ -60,9 +58,9 @@
               <object class="GtkEntry" id="entryPassword">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="tooltip_text" translatable="yes">Aktuelles NDS-Kennwort. Man hat f&#xFC;nf Versuche bis man gesperrt wird</property>
+                <property name="tooltip_text" translatable="yes">Aktuelles NDS-Kennwort. Man hat fünf Versuche bis man gesperrt wird</property>
                 <property name="visibility">False</property>
-                <property name="invisible_char">&#x2022;</property>
+                <property name="invisible_char">•</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -77,7 +75,9 @@
                 <property name="can_focus">True</property>
                 <property name="is_focus">True</property>
                 <property name="tooltip_text" translatable="yes">In der Form abc12345.6.stud.fh-regensburg.de</property>
-                <property name="invisible_char">&#x2022;</property>
+                <property name="invisible_char">•</property>
+                <property name="secondary_icon_stock">gtk-dialog-info</property>
+                <property name="secondary_icon_tooltip_text">Volle Kennung in Form von abc12345.5.stud.hs-regensburg.de</property>
                 <signal name="changed" handler="on_entryUsername_changed"/>
               </object>
               <packing>
@@ -107,7 +107,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
-                    <property name="tooltip_text" translatable="yes">Software f&#xFC;r die HS Regensburg</property>
+                    <property name="tooltip_text" translatable="yes">Software für die HS Regensburg</property>
                     <property name="use_underline">True</property>
                     <property name="draw_indicator">True</property>
                     <signal name="toggled" handler="on_checkbuttonMounts_toggled"/>
@@ -122,7 +122,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
-                    <property name="tooltip_text" translatable="yes">Pers&#xF6;nlicher Ordner</property>
+                    <property name="tooltip_text" translatable="yes">Persönlicher Ordner</property>
                     <property name="use_underline">True</property>
                     <property name="draw_indicator">True</property>
                     <signal name="toggled" handler="on_checkbuttonMounts_toggled"/>
@@ -137,7 +137,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
-                    <property name="tooltip_text" translatable="yes">&#xDC;bergreifender Ordner f&#xFC;r Fachbereiche und Labore</property>
+                    <property name="tooltip_text" translatable="yes">Übergreifender Ordner für Fachbereiche und Labore</property>
                     <property name="use_underline">True</property>
                     <property name="draw_indicator">True</property>
                     <signal name="toggled" handler="on_checkbuttonMounts_toggled"/>
@@ -211,11 +211,9 @@
                     <child>
                       <object class="GtkVBox" id="vbox4">
                         <property name="visible">True</property>
-                        <property name="orientation">vertical</property>
                         <child>
                           <object class="GtkVBox" id="vbox9">
                             <property name="visible">True</property>
-                            <property name="orientation">vertical</property>
                             <property name="spacing">2</property>
                             <child>
                               <object class="GtkLabel" id="label4">
@@ -248,7 +246,7 @@
                                       <object class="GtkLabel" id="label8">
                                         <property name="visible">True</property>
                                         <property name="xalign">1</property>
-                                        <property name="label" translatable="yes">Lokaler Einh&#xE4;ngepunkt:</property>
+                                        <property name="label" translatable="yes">Lokaler Einhängepunkt:</property>
                                       </object>
                                     </child>
                                     <child>
@@ -288,7 +286,7 @@
                                       <object class="GtkEntry" id="entryPath_F">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
-                                        <property name="invisible_char">&#x2022;</property>
+                                        <property name="invisible_char">•</property>
                                       </object>
                                       <packing>
                                         <property name="left_attach">1</property>
@@ -299,7 +297,7 @@
                                       <object class="GtkEntry" id="entryVolume_F">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
-                                        <property name="invisible_char">&#x2022;</property>
+                                        <property name="invisible_char">•</property>
                                       </object>
                                       <packing>
                                         <property name="left_attach">1</property>
@@ -312,7 +310,7 @@
                                       <object class="GtkEntry" id="entryServer_F">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
-                                        <property name="invisible_char">&#x2022;</property>
+                                        <property name="invisible_char">•</property>
                                       </object>
                                       <packing>
                                         <property name="left_attach">1</property>
@@ -325,7 +323,7 @@
                                       <object class="GtkEntry" id="entryDNSName_F">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
-                                        <property name="invisible_char">&#x2022;</property>
+                                        <property name="invisible_char">•</property>
                                       </object>
                                       <packing>
                                         <property name="left_attach">1</property>
@@ -364,7 +362,7 @@
                                       <object class="GtkLabel" id="label12">
                                         <property name="visible">True</property>
                                         <property name="xalign">1</property>
-                                        <property name="label" translatable="yes">Lokaler Einh&#xE4;ngepunkt:</property>
+                                        <property name="label" translatable="yes">Lokaler Einhängepunkt:</property>
                                       </object>
                                     </child>
                                     <child>
@@ -404,7 +402,7 @@
                                       <object class="GtkEntry" id="entryPath_G">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
-                                        <property name="invisible_char">&#x2022;</property>
+                                        <property name="invisible_char">•</property>
                                       </object>
                                       <packing>
                                         <property name="left_attach">1</property>
@@ -416,7 +414,7 @@
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="tooltip_text" translatable="yes">Wird aus NDS-Kennung ermittelt</property>
-                                        <property name="invisible_char">&#x2022;</property>
+                                        <property name="invisible_char">•</property>
                                       </object>
                                       <packing>
                                         <property name="left_attach">1</property>
@@ -430,7 +428,7 @@
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="tooltip_text" translatable="yes">Wird aus NDS-Kennung ermittelt</property>
-                                        <property name="invisible_char">&#x2022;</property>
+                                        <property name="invisible_char">•</property>
                                       </object>
                                       <packing>
                                         <property name="left_attach">1</property>
@@ -444,7 +442,7 @@
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="tooltip_text" translatable="yes">Wird aus NDS-Kennung ermittelt</property>
-                                        <property name="invisible_char">&#x2022;</property>
+                                        <property name="invisible_char">•</property>
                                       </object>
                                       <packing>
                                         <property name="left_attach">1</property>
@@ -483,7 +481,7 @@
                                       <object class="GtkLabel" id="label18">
                                         <property name="visible">True</property>
                                         <property name="xalign">1</property>
-                                        <property name="label" translatable="yes">Lokaler Einh&#xE4;ngepunkt:</property>
+                                        <property name="label" translatable="yes">Lokaler Einhängepunkt:</property>
                                       </object>
                                     </child>
                                     <child>
@@ -523,7 +521,7 @@
                                       <object class="GtkEntry" id="entryPath_H">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
-                                        <property name="invisible_char">&#x2022;</property>
+                                        <property name="invisible_char">•</property>
                                       </object>
                                       <packing>
                                         <property name="left_attach">1</property>
@@ -534,7 +532,7 @@
                                       <object class="GtkEntry" id="entryVolume_H">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
-                                        <property name="invisible_char">&#x2022;</property>
+                                        <property name="invisible_char">•</property>
                                       </object>
                                       <packing>
                                         <property name="left_attach">1</property>
@@ -547,7 +545,7 @@
                                       <object class="GtkEntry" id="entryDNSName_H">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
-                                        <property name="invisible_char">&#x2022;</property>
+                                        <property name="invisible_char">•</property>
                                       </object>
                                       <packing>
                                         <property name="left_attach">1</property>
@@ -560,7 +558,7 @@
                                       <object class="GtkEntry" id="entryServer_H">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
-                                        <property name="invisible_char">&#x2022;</property>
+                                        <property name="invisible_char">•</property>
                                       </object>
                                       <packing>
                                         <property name="left_attach">1</property>
@@ -599,7 +597,7 @@
                                       <object class="GtkLabel" id="label22">
                                         <property name="visible">True</property>
                                         <property name="xalign">1</property>
-                                        <property name="label" translatable="yes">Lokaler Einh&#xE4;ngepunkt:</property>
+                                        <property name="label" translatable="yes">Lokaler Einhängepunkt:</property>
                                       </object>
                                     </child>
                                     <child>
@@ -639,7 +637,7 @@
                                       <object class="GtkEntry" id="entryDNSName_K">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
-                                        <property name="invisible_char">&#x2022;</property>
+                                        <property name="invisible_char">•</property>
                                       </object>
                                       <packing>
                                         <property name="left_attach">1</property>
@@ -652,7 +650,7 @@
                                       <object class="GtkEntry" id="entryServer_K">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
-                                        <property name="invisible_char">&#x2022;</property>
+                                        <property name="invisible_char">•</property>
                                       </object>
                                       <packing>
                                         <property name="left_attach">1</property>
@@ -665,7 +663,7 @@
                                       <object class="GtkEntry" id="entryVolume_K">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
-                                        <property name="invisible_char">&#x2022;</property>
+                                        <property name="invisible_char">•</property>
                                       </object>
                                       <packing>
                                         <property name="left_attach">1</property>
@@ -678,7 +676,7 @@
                                       <object class="GtkEntry" id="entryPath_K">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
-                                        <property name="invisible_char">&#x2022;</property>
+                                        <property name="invisible_char">•</property>
                                       </object>
                                       <packing>
                                         <property name="left_attach">1</property>
@@ -715,7 +713,7 @@
                                       <object class="GtkLabel" id="label17">
                                         <property name="visible">True</property>
                                         <property name="xalign">1</property>
-                                        <property name="label" translatable="yes">Lokaler Einh&#xE4;ngepunkt:</property>
+                                        <property name="label" translatable="yes">Lokaler Einhängepunkt:</property>
                                       </object>
                                     </child>
                                     <child>
@@ -755,7 +753,7 @@
                                       <object class="GtkEntry" id="entryDNSName_P">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
-                                        <property name="invisible_char">&#x2022;</property>
+                                        <property name="invisible_char">•</property>
                                       </object>
                                       <packing>
                                         <property name="left_attach">1</property>
@@ -768,7 +766,7 @@
                                       <object class="GtkEntry" id="entryServer_P">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
-                                        <property name="invisible_char">&#x2022;</property>
+                                        <property name="invisible_char">•</property>
                                       </object>
                                       <packing>
                                         <property name="left_attach">1</property>
@@ -781,7 +779,7 @@
                                       <object class="GtkEntry" id="entryVolume_P">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
-                                        <property name="invisible_char">&#x2022;</property>
+                                        <property name="invisible_char">•</property>
                                       </object>
                                       <packing>
                                         <property name="left_attach">1</property>
@@ -794,7 +792,7 @@
                                       <object class="GtkEntry" id="entryPath_P">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
-                                        <property name="invisible_char">&#x2022;</property>
+                                        <property name="invisible_char">•</property>
                                       </object>
                                       <packing>
                                         <property name="left_attach">1</property>
@@ -859,7 +857,7 @@
                                   <object class="GtkEntry" id="entryCodepage">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
-                                    <property name="invisible_char">&#x2022;</property>
+                                    <property name="invisible_char">•</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -872,7 +870,7 @@
                                   <object class="GtkEntry" id="entryCharset">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
-                                    <property name="invisible_char">&#x2022;</property>
+                                    <property name="invisible_char">•</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -924,7 +922,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
-                    <property name="tooltip_text" translatable="yes">Gew&#xE4;hlte Laufwerke einbinden</property>
+                    <property name="tooltip_text" translatable="yes">Gewählte Laufwerke einbinden</property>
                     <property name="use_stock">True</property>
                     <signal name="clicked" handler="on_btn_connect_clicked"/>
                   </object>
@@ -936,7 +934,7 @@
                 </child>
                 <child>
                   <object class="GtkButton" id="btn_umount">
-                    <property name="label" translatable="yes">_Aush&#xE4;ngen</property>
+                    <property name="label" translatable="yes">_Aushängen</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
@@ -957,7 +955,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
-                    <property name="tooltip_text" translatable="yes">Ohne die eingh&#xE4;ngten Verzeichnisse auszuwerfen beenden</property>
+                    <property name="tooltip_text" translatable="yes">Ohne die einghängten Verzeichnisse auszuwerfen beenden</property>
                     <property name="use_stock">True</property>
                     <signal name="clicked" handler="on_btn_cancel_clicked"/>
                   </object>
