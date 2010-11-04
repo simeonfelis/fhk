@@ -857,6 +857,8 @@
                                   <object class="GtkEntry" id="entryCodepage">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
+                                    <property name="tooltip_text" translatable="yes">Zeichenkodierung der Dateinamen.
+cp850 für bessere Windows-Kompatibilität</property>
                                     <property name="invisible_char">•</property>
                                   </object>
                                   <packing>

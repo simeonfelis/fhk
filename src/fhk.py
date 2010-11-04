@@ -76,6 +76,62 @@ class Par:
 		                  'P': 'fh-kroesus.fh-regensburg.de'}
 
 
+	# From http://sebthom.de/136-comparing-version-numbers-in-jython-pytho/
+	def cmpver(self, vA, vB):
+		"""
+		Compares two version number strings
+		@param vA: first version string to compare
+		@param vB: second version string to compare
+		@author <a href="http://sebthom.de/">Sebastian Thomschke</a>
+		@return negative if vA < vB, zero if vA == vB, positive if vA > vB.
+
+		Examples:
+		>>> cmpver("0", "1")
+		-1
+		>>> cmpver("1", "0")
+		1
+		>>> cmpver("1", "1")
+		0
+		>>> cmpver("1.0", "1.0")
+		0
+		>>> cmpver("1.0", "1")
+		0
+		>>> cmpver("1", "1.0")
+		0
+		>>> cmpver("1.1.0", "1.0.1")
+		1
+		>>> cmpver("1.0.1", "1.1.1")
+		-1
+		>>> cmpver("0.3-SNAPSHOT", "0.3")
+		-1
+		>>> cmpver("0.3", "0.3-SNAPSHOT")
+		1
+		>>> cmpver("1.3b", "1.3c")
+		-1
+		>>> cmpver("1.14b", "1.3c")
+		1
+		"""
+		if vA == vB: return 0
+
+		def num(s):
+			if s.isdigit(): return int(s)
+			return s
+
+		seqA = map(num, re.findall('\d+|\w+', vA.replace('-SNAPSHOT', '')))
+		seqB = map(num, re.findall('\d+|\w+', vB.replace('-SNAPSHOT', '')))
+
+		# this is to ensure that 1.0 == 1.0.0 in cmp(..)
+		lenA, lenB = len(seqA), len(seqB)
+		for i in range(lenA, lenB): seqA += (0,)
+		for i in range(lenB, lenA): seqB += (0,)
+
+		rc = cmp(seqA, seqB)
+
+		if rc == 0:
+			if vA.endswith('-SNAPSHOT'): return -1
+			if vB.endswith('-SNAPSHOT'): return 1
+		return rc
+
 
 class Fhk:
 	def checkIPAddress (self):
@@ -203,10 +259,10 @@ class Fhk:
 		except:
 			context = ""
 		
-		print "short_name: " + short_name
-		print "role: " + role
-		print "group_number " + group_number
-		print "context: " + context
+		#print "short_name: " + short_name
+		#print "role: " + role
+		#print "group_number " + group_number
+		#print "context: " + context
 
 		entryVolume_G.set_text("user/" + short_name)
 		
@@ -221,10 +277,11 @@ class Fhk:
 		# When full context found, enable the Connect button			
 		if not role == "" and not short_name == "" and not context == "":
 			self.btnConnect.set_sensitive(True)
-			self.entryUsername.set_secondary_icon_stock = None
+			self.entryUsername.set_property("secondary_icon_stock", None)
 			
 		else:
-			print "No full name context found"
+			#print "No full name context found"
+			self.entryUsername.set_property("secondary_icon_stock", "gtk-info")
 			self.btnConnect.set_sensitive(False)
 
 	def on_checkbuttonMounts_toggled(self, widget, data=None):
@@ -319,7 +376,8 @@ class Fhk:
 			                      buttons=gtk.BUTTONS_CLOSE,
 			                      message_format=
 """Laufwerke koennen nicht ausgehaengt werden.
-Versuchen Sie es nochmal""")
+Beenden Sie alle Anwendungen die auf die eingehaengten 
+Pfade zugreifen und versuchen Sie es nochmal""")
 			swin=gtk.ScrolledWindow()
 			swin.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
 #			swin.add_with_viewport(view)
@@ -437,6 +495,13 @@ Versuchen Sie es nochmal""")
 		
 		# try to fill in G drive parameters:
 		self.on_entryUsername_changed(self.entryUsername)
+		
+		# Check ncpfs tool existens
+		# TODO
+		# Check ncpmount version
+		# TODO
+		
+		
 
 if __name__ == '__main__':
 	fhk = Fhk()
