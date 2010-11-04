@@ -211,17 +211,6 @@ class Fhk:
 					print "%s cannot be created" % path
 					return False
 		return True
-	def on_expanderParameter_activate (self, widget, data=None):
-		print "Parameter expand toggled"
-		if self.expanderParameters.get_property("expanded"):
-			print "was expanded"
-			self.window.set_size_request(self.window.get_size()[0], self.window_original_height)
-			self.window.resize(1,1)
-			#self.window.set_size_request(-1, -1)
-			
-		else:
-			print "was not expanded"
-			self.window_original_height = self.window.get_size()[1]
 
 	def on_entryUsername_changed(self, widget, data=None):
 		# Extract information for storage server and folder name

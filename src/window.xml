@@ -200,7 +200,6 @@ nicht für Mitarbeiter)</property>
           <object class="GtkExpander" id="expanderParameters">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <signal name="activate" handler="on_expanderParameter_activate"/>
             <child>
               <object class="GtkScrolledWindow" id="scrolledwindow1">
                 <property name="visible">True</property>
