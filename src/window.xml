@@ -5,7 +5,7 @@
   <object class="GtkWindow" id="window">
     <property name="width_request">500</property>
     <property name="border_width">10</property>
-    <property name="title" translatable="yes">fhk (ALPHA version)</property>
+    <property name="title" translatable="yes">fhk (Beta version)</property>
     <property name="window_position">center</property>
     <signal name="destroy" handler="on_window_destroy"/>
     <child>
@@ -122,7 +122,10 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
-                    <property name="tooltip_text" translatable="yes">Persönlicher Ordner</property>
+                    <property name="tooltip_text" translatable="yes">Persönlicher Ordner
+(Momentan nur für Studenten,
+nicht für Mitarbeiter)</property>
+                    <property name="relief">none</property>
                     <property name="use_underline">True</property>
                     <property name="draw_indicator">True</property>
                     <signal name="toggled" handler="on_checkbuttonMounts_toggled"/>
@@ -194,9 +197,10 @@
           </packing>
         </child>
         <child>
-          <object class="GtkExpander" id="expander1">
+          <object class="GtkExpander" id="expanderParameters">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
+            <signal name="activate" handler="on_expanderParameter_activate"/>
             <child>
               <object class="GtkScrolledWindow" id="scrolledwindow1">
                 <property name="visible">True</property>
@@ -857,7 +861,7 @@
                                   <object class="GtkEntry" id="entryCodepage">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
-                                    <property name="tooltip_text" translatable="yes">Zeichenkodierung der Dateinamen.
+                                    <property name="tooltip_text" translatable="yes">Zeichenkodierung der Dateinamen auf dem Server.
 cp850 für bessere Windows-Kompatibilität</property>
                                     <property name="invisible_char">•</property>
                                   </object>
@@ -872,6 +876,8 @@ cp850 für bessere Windows-Kompatibilität</property>
                                   <object class="GtkEntry" id="entryCharset">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
+                                    <property name="tooltip_text" translatable="yes">Zeichenkodierung der Dateinamen auf dem eigenen Computer.
+utf8 nutzen die meisten Linuxe</property>
                                     <property name="invisible_char">•</property>
                                   </object>
                                   <packing>

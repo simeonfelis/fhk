@@ -211,13 +211,21 @@ class Fhk:
 					print "%s cannot be created" % path
 					return False
 		return True
+	def on_expanderParameter_activate (self, widget, data=None):
+		print "Parameter expand toggled"
+		if self.expanderParameters.get_property("expanded"):
+			print "was expanded"
+			self.window.set_size_request(self.window.get_size()[0], self.window_original_height)
+			self.window.resize(1,1)
+			#self.window.set_size_request(-1, -1)
+			
+		else:
+			print "was not expanded"
+			self.window_original_height = self.window.get_size()[1]
 
 	def on_entryUsername_changed(self, widget, data=None):
 		# Extract information for storage server and folder name
 		name = widget.get_text()
-		#print name
-		#parted = re.match(r"(?P<short_name>^\w{3}\d{5})\.(?P<context_number>\d)\.(?P<context_type>.+)\.(?P<context_end>[f|h][h|s]-regensburg\.de)$", name)
-		#print parted.groupdict()
 
 		entryVolume_G = self.builder.get_object("entryVolume_G")
 		entryServer_G = self.builder.get_object("entryServer_G")
@@ -267,9 +275,12 @@ class Fhk:
 		entryVolume_G.set_text("user/" + short_name)
 		
 		if group_number == "":
-			entryVolume_G.set_text("user" + "/" + short_name)
-			entryDNSName_G.set_text("fh-mars-user" + ".hs-regensburg.de")
+			self.checkbuttonHandles["G"].set_property("sensitive", False)
+			self.checkbuttonHandles["G"].set_property("active", False)
+			entryVolume_G.set_text("")
+			entryDNSName_G.set_text("")
 		else:
+			self.checkbuttonHandles["G"].set_property("sensitive", True)
 			entryVolume_G.set_text("user" + group_number + "/" + group_number + "/" + short_name)
 			entryDNSName_G.set_text("fh-mars-user" + group_number + ".hs-regensburg.de")
 			entryServer_G.set_text("hs-mars")
@@ -303,18 +314,19 @@ class Fhk:
 			a.destroy()
 			return
 
-		if (self.checkIPAddress() == False):
-			if (self.warningIPAddress()):
-				print "Trying to connect through unsecure network"
-			else:
-				return
-		else:
-			print "IP address OK"
+#		if (self.checkIPAddress() == False):
+#			if (self.warningIPAddress()):
+#				print "Trying to connect through unsecure network"
+#			else:
+#				return
+#		else:
+#			print "IP address OK"
 
 		success = False
 		for drive in self.par.drives:
 			if self.par.mounts[drive]:
 				if not self.pathCreate(self.entryPathHandles[drive].get_text()):
+					self.checkbuttonHandles[drive].set_active(False)
 					continue #jump over that drive if path creation fails
 				try:
 					tmpCall = ["ncpmount",
@@ -341,13 +353,14 @@ class Fhk:
 				except:
 					print "invalid arguments on ncpmount"
 					continue
-
+				self.checkbuttonHandles[drive].set_active(False)
 				print drive + " mounted"
 
 			if success:
 				self.btnDisconnect.set_sensitive(True)
 
-		#gksu "ncpmount -S fh-kroesus -A fh-kroesus.fh-regensburg.de -P $PW -V DATA1/kurs -U fes37620.0.stud.fh-regensburg.de -C -m -p cp850 -y utf8 /media/K/"
+		# gksu "ncpmount -S fh-kroesus -A fh-kroesus.fh-regensburg.de -P $PW -V DATA1/kurs -U fes37620.0.stud.fh-regensburg.de -C -m -p cp850 -y utf8 /media/K/"
+		# ncpmount -V DATA3/kurs -S fh-kroesus -A fh-kroesus.fh-regensburg.de -U fes39774.e-technik.fh-regensburg.de -C -m -r 2 -p cp850  -y utf8 /home/simeon/K/
 
 	def on_btn_umount_clicked(self, widget, data=None):
 		try:
@@ -457,6 +470,7 @@ Pfade zugreifen und versuchen Sie es nochmal""")
 		self.btnConnect = self.builder.get_object("btn_connect")
 		self.entryCodepage = self.builder.get_object("entryCodepage")
 		self.entryCharset = self.builder.get_object("entryCharset")
+		self.expanderParameters = self.builder.get_object("expanderParameters")
 		self.entryPathHandles = {}
 		self.entryVolumeHandles = {}
 		self.entryServerHandles = {}
