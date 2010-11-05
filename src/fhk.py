@@ -320,7 +320,7 @@ class Fhk:
 					self.checkbuttonHandles[drive].set_active(False)
 					continue #jump over that drive if path creation fails
 				try:
-					tmpCall = ["ncpmountERR",
+					tmpCall = ["ncpmount",
 					           "-V", self.entryVolumeHandles[drive].get_text(),
 					           "-S", self.entryServerHandles[drive].get_text(),
 					           "-A", self.entryDNSNameHandles[drive].get_text(),
