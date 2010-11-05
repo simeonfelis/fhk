@@ -134,6 +134,35 @@ class Par:
 
 
 class Fhk:
+	def show_error_missing_ncpmount(self):
+		md = gtk.MessageDialog(self.window, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_ERROR, gtk.BUTTONS_CLOSE, "")
+		md.set_markup("""Das Programm <b>ncpmount</b> konnte nicht gefunden werden. Ist das Paket <b>ncpfs</b> installiert?""")
+		md.format_secondary_markup("""Fuer Ubuntu bis einschliesslich Version 10.04 (Lucid Lynx) sollte man auf folgende Version zurueckgreifen:
+<b>32 Bit</b>: 
+http://archive.ubuntu.com/ubuntu/pool/universe/n/ncpfs/ncpfs_2.2.6-4ubuntu3_i386.deb
+<b>64 Bit</b>: 
+http://archive.ubuntu.com/ubuntu/pool/universe/n/ncpfs/ncpfs_2.2.6-4ubuntu3_amd64.deb""")
+		md.run()
+		md.destroy()
+		
+	def which(self, program):
+		def is_exe(fpath):
+			return os.path.exists(fpath) and os.access(fpath, os.X_OK)
+
+		fpath, fname = os.path.split(program)
+		print "fpath: " + fpath + " , fname: " + fname
+		if fpath:
+			if is_exe(program):
+				return program
+		else:
+			for path in os.environ["PATH"].split(os.pathsep):
+				exe_file = os.path.join(path, program)
+				if is_exe(exe_file):
+					print exe_file
+					return exe_file
+
+		return None
+
 	def checkIPAddress (self):
 	# returns true if an network interface is found
 	# which has an IP address in the range of the University Regensburg
@@ -305,14 +334,6 @@ class Fhk:
 			a.destroy()
 			return
 
-#		if (self.checkIPAddress() == False):
-#			if (self.warningIPAddress()):
-#				print "Trying to connect through unsecure network"
-#			else:
-#				return
-#		else:
-#			print "IP address OK"
-
 		success = False
 		for drive in self.par.drives:
 			if self.par.mounts[drive]:
@@ -347,7 +368,12 @@ class Fhk:
 						self.pathCleanup(self.entryPathHandles[drive].get_text())
 						continue
 				except:
-					print "invalid arguments on ncpmount"
+					if self.which("ncpmount") == None:
+						self.show_error_missing_ncpmount()
+					else:
+						md = gtk.MessageDialog(self.window, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_ERROR, gtk.BUTTONS_CLOSE, "Ein Bug im Programm ist aufgetreten. Sorry!")
+						md.run()
+						md.destroy()
 					continue
 				self.checkbuttonHandles[drive].set_active(False)
 				print drive + " mounted"
