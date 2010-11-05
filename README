@@ -1,3 +1,8 @@
+Was ist fhk
+===========
+Inoffizielle Oberfläche zum einhängen der Novell-Netware Laufwerke F,H,K,P 
+und G an der FH Regensburg.
+
 Diese Programm ist getestet unter Ubuntu 10.10 (Maverick Merkaat)
 
 Vorraussetzungen:
@@ -28,11 +33,7 @@ Ausführen:
 Für Wen?
 ========
 
-Für Studenten der FH Regensburg (Alles hoch inoffiziell). Bedienstete und Uni-Studenten sind noch nicht
-implementiert.
-D.h. man braucht folgenden Kontext:
-	abc12345.6.stud.fh-regensburg.de
-	           ----
+Für Studenten und Bedienstete der FH Regensburg
 
 
 Wer?
