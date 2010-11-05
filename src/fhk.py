@@ -278,10 +278,12 @@ class Fhk:
 		if not role == "" and not short_name == "" and not context == "":
 			self.btnConnect.set_sensitive(True)
 			self.entryUsername.set_property("secondary_icon_stock", None)
+			self.entryUsername.set_property("secondary_icon_tooltip_text", "")
 			
 		else:
 			#print "No full name context found"
 			self.entryUsername.set_property("secondary_icon_stock", "gtk-info")
+			self.entryUsername.set_property("secondary_icon_tooltip_text", "Volle Kennung in Form von abc12345.5.stud.hs-regensburg.de")
 			self.btnConnect.set_sensitive(False)
 
 	def on_checkbuttonMounts_toggled(self, widget, data=None):
@@ -318,7 +320,7 @@ class Fhk:
 					self.checkbuttonHandles[drive].set_active(False)
 					continue #jump over that drive if path creation fails
 				try:
-					tmpCall = ["ncpmount",
+					tmpCall = ["ncpmountERR",
 					           "-V", self.entryVolumeHandles[drive].get_text(),
 					           "-S", self.entryServerHandles[drive].get_text(),
 					           "-A", self.entryDNSNameHandles[drive].get_text(),
@@ -326,7 +328,7 @@ class Fhk:
 					           "-P", self.entryPassword.get_text(),
 					           "-p", self.entryCodepage.get_text(),
 					           "-y", self.entryCharset.get_text(),
-					           "-r", "2",
+					           "-r", "1",
 					           "-C", "-m",
 					           self.entryPathHandles[drive].get_text()]
 					#print "Calling "
@@ -335,7 +337,12 @@ class Fhk:
 					retcode = subprocess.call(tmpCall)
 					if not retcode:
 						success = True
-					else:
+					else: 
+						if retcode == 55:
+							self.entryUsername.set_property("secondary_icon_stock", "gtk-cancel")
+							self.entryUsername.set_property("secondary_icon_tooltip_text", "NDS Kennung oder Passwort falsch. Vertippt?")
+							break
+
 						print "Returned %s" %retcode
 						self.pathCleanup(self.entryPathHandles[drive].get_text())
 						continue
@@ -347,6 +354,8 @@ class Fhk:
 
 			if success:
 				self.btnDisconnect.set_sensitive(True)
+				self.entryUsername.set_property("secondary_icon_stock", None)
+				self.entryUsername.set_property("secondary_icon_tooltip_text", "")
 
 		# gksu "ncpmount -S fh-kroesus -A fh-kroesus.fh-regensburg.de -P $PW -V DATA1/kurs -U fes37620.0.stud.fh-regensburg.de -C -m -p cp850 -y utf8 /media/K/"
 		# ncpmount -V DATA3/kurs -S fh-kroesus -A fh-kroesus.fh-regensburg.de -U fes39774.e-technik.fh-regensburg.de -C -m -r 2 -p cp850  -y utf8 /home/simeon/K/
