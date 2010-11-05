@@ -1,22 +1,23 @@
+Diese Programm ist getestet unter Ubuntu 10.10 (Maverick Merkaat)
+
 Vorraussetzungen:
+=================
 	python
 	pygtk
 	ncpfs
 
-Achtung!
-Dieses Programm ist noch sehr stark in Entwicklung. Es ist noch im Alpha-Status.
-Es können ernsthafte Probleme durch die Benutzung dieses noch nicht fertigen Programms
-entstehen!
-
-Hinweis:
+Bekannte Probleme:
+==================
 In Ubuntu 7.10, 8.04, 8.10, 9.04, 9.10  ist ncpfs fehlerhaft. Siehe Bugreport
 https://bugs.launchpad.net/ubuntu/+source/ncpfs/+bug/140464
-
-Folgendes Paket funktioniert:
+Folgendes Paket funktioniert eingeschränkt:
 http://archive.ubuntu.com/ubuntu/pool/universe/n/ncpfs/ncpfs_2.2.6-4ubuntu3_i386.deb
 64 Bit:
 http://archive.ubuntu.com/ubuntu/pool/universe/n/ncpfs/ncpfs_2.2.6-4ubuntu3_amd64.deb
 
+
+Sonstiges:
+==========
 Es wird eine Uni-Interne IP (VPN) benötigt!
 
 Ausführen:
@@ -25,6 +26,8 @@ Ausführen:
 
 
 Für Wen?
+========
+
 Für Studenten der FH Regensburg (Alles hoch inoffiziell). Bedienstete und Uni-Studenten sind noch nicht
 implementiert.
 D.h. man braucht folgenden Kontext:
@@ -33,5 +36,6 @@ D.h. man braucht folgenden Kontext:
 
 
 Wer?
+====
 Simeon Felis. Fragen, Probleme, Patches, Ideen bitte an simeonfelis@googlemail.com
 
