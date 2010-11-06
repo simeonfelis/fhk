@@ -370,6 +370,8 @@ http://archive.ubuntu.com/ubuntu/pool/universe/n/ncpfs/ncpfs_2.2.6-4ubuntu3_amd6
 				except:
 					if self.which("ncpmount") == None:
 						self.show_error_missing_ncpmount()
+						break
+						
 					else:
 						md = gtk.MessageDialog(self.window, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_ERROR, gtk.BUTTONS_CLOSE, "Ein Bug im Programm ist aufgetreten. Sorry!")
 						md.run()
