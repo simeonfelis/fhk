@@ -940,13 +940,13 @@ utf8 nutzen die meisten Linuxe</property>
                 </child>
                 <child>
                   <object class="GtkButton" id="btn_umount">
-                    <property name="label" translatable="yes">_Aushängen</property>
+                    <property name="label">gtk-disconnect</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
                     <property name="tooltip_text" translatable="yes">Alle eingebunden Laufwerke auswerfen</property>
-                    <property name="image">image_unmount</property>
                     <property name="use_underline">True</property>
+                    <property name="use_stock">True</property>
                     <signal name="clicked" handler="on_btn_umount_clicked"/>
                   </object>
                   <packing>
@@ -956,14 +956,14 @@ utf8 nutzen die meisten Linuxe</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="btn_cancel">
+                  <object class="GtkButton" id="btn_quit">
                     <property name="label">gtk-quit</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
                     <property name="tooltip_text" translatable="yes">Ohne die einghängten Verzeichnisse auszuwerfen beenden</property>
                     <property name="use_stock">True</property>
-                    <signal name="clicked" handler="on_btn_cancel_clicked"/>
+                    <signal name="clicked" handler="on_btn_quit_clicked"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>

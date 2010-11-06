@@ -425,20 +425,50 @@ Pfade zugreifen und versuchen Sie es nochmal""")
 			a.run()
 			a.destroy()
 
+	def askForExistingMounts(self):
+		mountedDrives = ""
+		
+		for drive in self.par.drives:
+			if os.path.ismount( self.par.paths[drive] ):
+				mountedDrives += drive + ", "
+		
+		if not mountedDrives == "":
+			print mountedDrives + " still mounted"
+			md = gtk.MessageDialog(type=gtk.MESSAGE_QUESTION)
+			md.add_buttons(gtk.STOCK_DISCONNECT, gtk.RESPONSE_ACCEPT, 
+			               gtk.STOCK_NO, gtk.RESPONSE_CANCEL)
+			md.set_title("fhk - Laufwerke nicht getrennt")
+			md.set_markup("<big><b>Laufwerke %s noch sind noch verbunden</b></big>" % mountedDrives)
+			md.format_secondary_text("Sollen die Lauferke vor dem beenden getrennt werden?")
 
-	def on_btn_cancel_clicked(self, widget, data=None):
+			res = md.run()
+
+			if res == gtk.RESPONSE_ACCEPT:
+				self.on_btn_umount_clicked(None)
+			md.destroy()
+
+
+	def on_btn_quit_clicked(self, widget, data=None):
+		self.askForExistingMounts()
 		gtk.main_quit()
-		print "canceled"
 
 	def on_window_destroy(self, widget, data=None):
-		print "destroy"
+		print "window destroy"
+		self.askForExistingMounts()
+
 		gtk.main_quit()
 
 	def delete_event(self, widget, event, data=None):
+		print "delete"
+		self.askForExistingMounts()
+
 		gtk.main_quit()
 		return False
 
 	def destroy(self, widget, data=None):
+		print "destroy"
+		self.askForExistingMounts()
+
 		gtk.main_quit()
 
 	def main(self, data=None):
