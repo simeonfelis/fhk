@@ -928,7 +928,7 @@ utf8 nutzen die meisten Linuxe</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
-                    <property name="tooltip_text" translatable="yes">Gewählte Laufwerke einbinden</property>
+                    <property name="tooltip_text" translatable="yes">Gewählte Laufwerke verbinden</property>
                     <property name="use_stock">True</property>
                     <signal name="clicked" handler="on_btn_connect_clicked"/>
                   </object>
@@ -944,7 +944,7 @@ utf8 nutzen die meisten Linuxe</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
-                    <property name="tooltip_text" translatable="yes">Alle eingebunden Laufwerke auswerfen</property>
+                    <property name="tooltip_text" translatable="yes">Alle verbundenen Laufwerke trennen</property>
                     <property name="use_underline">True</property>
                     <property name="use_stock">True</property>
                     <signal name="clicked" handler="on_btn_umount_clicked"/>
@@ -961,7 +961,6 @@ utf8 nutzen die meisten Linuxe</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
-                    <property name="tooltip_text" translatable="yes">Ohne die einghängten Verzeichnisse auszuwerfen beenden</property>
                     <property name="use_stock">True</property>
                     <signal name="clicked" handler="on_btn_quit_clicked"/>
                   </object>
