@@ -47,7 +47,7 @@ class Par:
 		self.drives = ['F', 'G', 'H', 'K', 'P']
 
 		self.mounts = {'F': False,
-		               'G': True,
+		               'G': False,
 		               'H': False,
 		               'K': False,
 		               'P': False}
@@ -75,6 +75,10 @@ class Par:
 		                  'H': 'fh-kroesus.fh-regensburg.de',
 		                  'K': 'fh-kroesus.fh-regensburg.de',
 		                  'P': 'fh-kroesus.fh-regensburg.de'}
+		
+		# Other UI settings
+		self.dontAskForUmountOnExit = False
+		self.umountOnExit = False
 
 
 	# From http://sebthom.de/136-comparing-version-numbers-in-jython-pytho/
@@ -443,7 +447,7 @@ Pfade zugreifen und versuchen Sie es nochmal""")
 			if os.path.ismount( self.par.paths[drive] ):
 				mountedDrives += drive + ", "
 		
-		if not mountedDrives == "":
+		if not mountedDrives == "" and not self.par.dontAskForUmountOnExit :
 			print mountedDrives + " still mounted"
 			md = gtk.MessageDialog(type=gtk.MESSAGE_QUESTION)
 			md.add_buttons(gtk.STOCK_DISCONNECT, gtk.RESPONSE_ACCEPT, 
@@ -451,12 +455,29 @@ Pfade zugreifen und versuchen Sie es nochmal""")
 			md.set_title("fhk - Laufwerke nicht getrennt")
 			md.set_markup("<big><b>Laufwerke %s noch sind noch verbunden</b></big>" % mountedDrives)
 			md.format_secondary_text("Sollen die Lauferke vor dem beenden getrennt werden?")
+			
+			ca = md.get_content_area()
+			cb = gtk.CheckButton("Frage nicht wieder nach")
+			cb.set_active(self.par.dontAskForUmountOnExit)
+			ca.add(cb)
+			md.show_all()
 
 			res = md.run()
 
 			if res == gtk.RESPONSE_ACCEPT:
 				self.on_btn_umount_clicked(None)
+				self.par.umountOnExit = True
+				self.par.dontAskForUmountOnExit = cb.get_active()
+				
+			else:
+				self.par.umountOnExit = False
+				self.par.dontAskForUmountOnExit = cb.get_active()
 			md.destroy()
+			
+		else: 
+			if not mountedDrives == "":
+				self.on_btn_umount_clicked(None)
+
 
 
 	def on_btn_quit_clicked(self, widget, data=None):
