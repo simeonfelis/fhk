@@ -501,9 +501,17 @@ Pfade zugreifen und versuchen Sie es nochmal""")
 	def __init__(self):
 
 		self.builder = gtk.Builder()
-		self.builder.add_from_file("window.xml")
+		try:
+			self.builder.add_from_file("window.xml")
+		except:
+			try: 
+				self.builder.add_from_file("src/window.xml")
+			except:
+				print "Could not load window.xml. Wrong path?"
+
 		# connect signals later, not to interrupt initialization
 		self.window = self.builder.get_object("window")
+		self.window.set_icon_from_file("../fhk.png")
 		self.window.show()
 		self.par = Par()
 		if os.path.isfile(os.path.expanduser('~/.fhk.pkl')) : # if config already exists
