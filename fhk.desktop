@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=HS Regensburg Laufwerke verbinden
 TryExec=python src/fhk.py
-Icon=./fhk-24.png
+Icon=fhk.png
 Type=Application
 

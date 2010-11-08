@@ -81,68 +81,14 @@ class Par:
 		self.umountOnExit = False
 
 
-	# From http://sebthom.de/136-comparing-version-numbers-in-jython-pytho/
-	def cmpver(self, vA, vB):
-		"""
-		Compares two version number strings
-		@param vA: first version string to compare
-		@param vB: second version string to compare
-		@author <a href="http://sebthom.de/">Sebastian Thomschke</a>
-		@return negative if vA < vB, zero if vA == vB, positive if vA > vB.
-
-		Examples:
-		>>> cmpver("0", "1")
-		-1
-		>>> cmpver("1", "0")
-		1
-		>>> cmpver("1", "1")
-		0
-		>>> cmpver("1.0", "1.0")
-		0
-		>>> cmpver("1.0", "1")
-		0
-		>>> cmpver("1", "1.0")
-		0
-		>>> cmpver("1.1.0", "1.0.1")
-		1
-		>>> cmpver("1.0.1", "1.1.1")
-		-1
-		>>> cmpver("0.3-SNAPSHOT", "0.3")
-		-1
-		>>> cmpver("0.3", "0.3-SNAPSHOT")
-		1
-		>>> cmpver("1.3b", "1.3c")
-		-1
-		>>> cmpver("1.14b", "1.3c")
-		1
-		"""
-		if vA == vB: return 0
-
-		def num(s):
-			if s.isdigit(): return int(s)
-			return s
-
-		seqA = map(num, re.findall('\d+|\w+', vA.replace('-SNAPSHOT', '')))
-		seqB = map(num, re.findall('\d+|\w+', vB.replace('-SNAPSHOT', '')))
-
-		# this is to ensure that 1.0 == 1.0.0 in cmp(..)
-		lenA, lenB = len(seqA), len(seqB)
-		for i in range(lenA, lenB): seqA += (0,)
-		for i in range(lenB, lenA): seqB += (0,)
-
-		rc = cmp(seqA, seqB)
-
-		if rc == 0:
-			if vA.endswith('-SNAPSHOT'): return -1
-			if vB.endswith('-SNAPSHOT'): return 1
-		return rc
-
-
 class Fhk:
 	def show_error_missing_ncpmount(self):
 		md = gtk.MessageDialog(self.window, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_ERROR, gtk.BUTTONS_CLOSE, "")
-		md.set_markup("""Das Programm <b>ncpmount</b> konnte nicht gefunden werden. Ist das Paket <b>ncpfs</b> installiert?""")
-		md.format_secondary_markup("""Fuer Ubuntu bis einschliesslich Version 10.04 (Lucid Lynx) sollte man auf folgende Version zurueckgreifen:
+		md.set_markup(
+"""Das Programm <b>ncpmount</b> konnte nicht gefunden werden. 
+Ist das Paket <b>ncpfs</b> installiert?""")
+		md.format_secondary_markup(
+"""Fuer Ubuntu bis einschliesslich Version 10.04 (Lucid Lynx) sollte man auf folgende Version zurueckgreifen:
 <b>32 Bit</b>: 
 http://archive.ubuntu.com/ubuntu/pool/universe/n/ncpfs/ncpfs_2.2.6-4ubuntu3_i386.deb
 <b>64 Bit</b>: 
