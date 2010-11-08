@@ -21,6 +21,7 @@
 
 
 import os
+import pickle
 #import pango
 import pygtk
 pygtk.require('2.0')
@@ -333,6 +334,9 @@ http://archive.ubuntu.com/ubuntu/pool/universe/n/ncpfs/ncpfs_2.2.6-4ubuntu3_amd6
 			a.run()
 			a.destroy()
 			return
+		
+		# store username for config file
+		self.par.username = self.entryUsername.get_text()
 
 		success = False
 		for drive in self.par.drives:
@@ -340,6 +344,7 @@ http://archive.ubuntu.com/ubuntu/pool/universe/n/ncpfs/ncpfs_2.2.6-4ubuntu3_amd6
 				if not self.pathCreate(self.entryPathHandles[drive].get_text()):
 					self.checkbuttonHandles[drive].set_active(False)
 					continue #jump over that drive if path creation fails
+					# TODO: note about this error
 				try:
 					tmpCall = ["ncpmount",
 					           "-V", self.entryVolumeHandles[drive].get_text(),
@@ -373,11 +378,15 @@ http://archive.ubuntu.com/ubuntu/pool/universe/n/ncpfs/ncpfs_2.2.6-4ubuntu3_amd6
 						break
 						
 					else:
-						md = gtk.MessageDialog(self.window, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_ERROR, gtk.BUTTONS_CLOSE, "Ein Bug im Programm ist aufgetreten. Sorry!")
+						md = gtk.MessageDialog(self.window, 
+						                       gtk.DIALOG_DESTROY_WITH_PARENT, 
+						                       gtk.MESSAGE_ERROR, 
+						                       gtk.BUTTONS_CLOSE, 
+						                       "Ein Bug im Programm fhk ist aufgetreten. Sorry!")
 						md.run()
 						md.destroy()
 					continue
-				self.checkbuttonHandles[drive].set_active(False)
+				# self.checkbuttonHandles[drive].set_active(False)        # commented out for remembering this setting on next start
 				print drive + " mounted"
 
 			if success:
@@ -452,17 +461,27 @@ Pfade zugreifen und versuchen Sie es nochmal""")
 
 	def on_btn_quit_clicked(self, widget, data=None):
 		self.askForExistingMounts()
+		storedConfig = open (os.path.expanduser('~/.fhk.pkl'), 'wb')
+		pickle.dump(self.par, storedConfig)
+		storedConfig.close()		
+		
 		gtk.main_quit()
 
 	def on_window_destroy(self, widget, data=None):
 		print "window destroy"
 		self.askForExistingMounts()
+		storedConfig = open (os.path.expanduser('~/.fhk.pkl'), 'wb')
+		pickle.dump(self.par, storedConfig)
+		storedConfig.close()
 
 		gtk.main_quit()
 
 	def delete_event(self, widget, event, data=None):
 		print "delete"
 		self.askForExistingMounts()
+		storedConfig = open (os.path.expanduser('~/.fhk.pkl'), 'wb')
+		pickle.dump(self.par, storedConfig)
+		storedConfig.close()
 
 		gtk.main_quit()
 		return False
@@ -470,6 +489,9 @@ Pfade zugreifen und versuchen Sie es nochmal""")
 	def destroy(self, widget, data=None):
 		print "destroy"
 		self.askForExistingMounts()
+		storedConfig = open (os.path.expanduser('~/.fhk.pkl'), 'wb')
+		pickle.dump(self.par, storedConfig)
+		storedConfig.close()
 
 		gtk.main_quit()
 
@@ -477,45 +499,20 @@ Pfade zugreifen und versuchen Sie es nochmal""")
 		gtk.main()
 
 	def __init__(self):
-#		program=gnome.program_init(app_id="fhk",
-#		                           app_version="0.1 beta")#,
-#		                           #module_info=[])#,
-#		                           #argc=len(sys.argv))#,
-#		                           #argv=sys.argv)
-#
-#
-#		client = gconf.client_get_default()
-#		clientPath = gnome.gconf_get_app_settings_relative(program, "")
-#		client.add_dir(dir=clientPath,
-#		               preload=gconf.CLIENT_PRELOAD_NONE)
-#
-#		try:
-#			test = client.get_int("test")
-#			print test
-#		except:
-#			print "couldn't retrieve key"
-#		try:
-#			value = gconf.value_new(GCONF_VALUE_INT)
-#		except:
-#			print "no success value new"
-#
-#		try:
-#			gconf.value_set(value, 42)
-#		except:
-#			print "no  success value set"
-#		try:
-#			client.set_int("apps/fhk/test", 42)
-#		except:
-#			print "no successset_int"
-
-
 
 		self.builder = gtk.Builder()
 		self.builder.add_from_file("window.xml")
-		self.builder.connect_signals(self)
+		# connect signals later, not to interrupt initialization
 		self.window = self.builder.get_object("window")
 		self.window.show()
 		self.par = Par()
+		if os.path.isfile(os.path.expanduser('~/.fhk.pkl')) : # if config already exists
+			storedConfig = open (os.path.expanduser('~/.fhk.pkl'), 'rb')
+			self.par = pickle.load(storedConfig)
+		else: # create new one
+			storedConfig = open (os.path.expanduser('~/.fhk.pkl'), 'wb')
+			pickle.dump(self.par, storedConfig)
+		storedConfig.close()
 
 		# Get some handles to UI
 		self.entryUsername = self.builder.get_object("entryUsername")
@@ -548,6 +545,7 @@ Pfade zugreifen und versuchen Sie es nochmal""")
 				self.builder.get_object("expander_" + drive) )
 
 		#init gui
+		self.entryUsername.set_text(self.par.username)
 		self.entryCodepage.set_text(self.par.codepage)
 		self.entryCharset.set_text(self.par.charset)
 		self.btnDisconnect.set_sensitive(False)
@@ -557,19 +555,14 @@ Pfade zugreifen und versuchen Sie es nochmal""")
 			self.entryServerHandles[drive].set_text(self.par.servers[drive])
 			self.entryDNSNameHandles[drive].set_text(self.par.dns_names[drive])
 			self.checkbuttonHandles[drive].set_sensitive(True)
-			self.checkbuttonHandles[drive].set_active(self.par.mounts[drive])
+			self.checkbuttonHandles[drive].set_active(self.par.mounts[drive]) # FIXME: not correctly initialized by pickle
 			self.expanderHandles[drive].set_sensitive(True)
 			if os.path.ismount( self.par.paths[drive] ):
 				print drive + " aready mounted"
 				self.btnDisconnect.set_sensitive(True)
 		
-		# try to fill in G drive parameters:
-		self.on_entryUsername_changed(self.entryUsername)
-		
-		# Check ncpfs tool existens
-		# TODO
-		# Check ncpmount version
-		# TODO
+		# do signal connection at the very end, not to provocate signals during initializing
+		self.builder.connect_signals(self)
 		
 		
 
