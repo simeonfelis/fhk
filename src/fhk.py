@@ -606,6 +606,7 @@ Pfade zugreifen und versuchen Sie es nochmal""" % drvLeft)
 				print drive + " aready mounted"
 				self.btnDisconnect.set_sensitive(True)
 		
+		self.on_entryUsername_changed(self.entryUsername)
 		# do signal connection at the very end, not to provocate signals during initializing
 		self.builder.connect_signals(self)
 		
