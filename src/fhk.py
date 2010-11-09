@@ -325,6 +325,7 @@ Wollen Sie es trotzdem versuchen?""")
 			self.checkbuttonHandles["G"].set_property("active", False)
 			entryVolume_G.set_text("")
 			entryDNSName_G.set_text("")
+			entryServer_G.set_text("")
 		else:
 			self.checkbuttonHandles["G"].set_property("sensitive", True)
 			entryVolume_G.set_text("user" + group_number + "/" + group_number + "/" + short_name)
