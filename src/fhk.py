@@ -47,7 +47,7 @@ class Par:
 		self.drives = ['F', 'G', 'H', 'K', 'P']
 
 		self.mounts = {'F': False,
-		               'G': False,
+		               'G': True,
 		               'H': False,
 		               'K': False,
 		               'P': False}
@@ -76,26 +76,83 @@ class Par:
 		                  'K': 'fh-kroesus.fh-regensburg.de',
 		                  'P': 'fh-kroesus.fh-regensburg.de'}
 		
-		# Other UI settings
-		self.dontAskForUmountOnExit = False
-		self.umountOnExit = False
+		self.dontAskUmountBeforeExit = False
+		self.umountBeforeExit = False
+
+
+	# From http://sebthom.de/136-comparing-version-numbers-in-jython-pytho/
+	def cmpver(self, vA, vB):
+		"""
+		Compares two version number strings
+		@param vA: first version string to compare
+		@param vB: second version string to compare
+		@author <a href="http://sebthom.de/">Sebastian Thomschke</a>
+		@return negative if vA < vB, zero if vA == vB, positive if vA > vB.
+
+		Examples:
+		>>> cmpver("0", "1")
+		-1
+		>>> cmpver("1", "0")
+		1
+		>>> cmpver("1", "1")
+		0
+		>>> cmpver("1.0", "1.0")
+		0
+		>>> cmpver("1.0", "1")
+		0
+		>>> cmpver("1", "1.0")
+		0
+		>>> cmpver("1.1.0", "1.0.1")
+		1
+		>>> cmpver("1.0.1", "1.1.1")
+		-1
+		>>> cmpver("0.3-SNAPSHOT", "0.3")
+		-1
+		>>> cmpver("0.3", "0.3-SNAPSHOT")
+		1
+		>>> cmpver("1.3b", "1.3c")
+		-1
+		>>> cmpver("1.14b", "1.3c")
+		1
+		"""
+		if vA == vB: return 0
+
+		def num(s):
+			if s.isdigit(): return int(s)
+			return s
+
+		seqA = map(num, re.findall('\d+|\w+', vA.replace('-SNAPSHOT', '')))
+		seqB = map(num, re.findall('\d+|\w+', vB.replace('-SNAPSHOT', '')))
+
+		# this is to ensure that 1.0 == 1.0.0 in cmp(..)
+		lenA, lenB = len(seqA), len(seqB)
+		for i in range(lenA, lenB): seqA += (0,)
+		for i in range(lenB, lenA): seqB += (0,)
+
+		rc = cmp(seqA, seqB)
+
+		if rc == 0:
+			if vA.endswith('-SNAPSHOT'): return -1
+			if vB.endswith('-SNAPSHOT'): return 1
+		return rc
 
 
 class Fhk:
 	def show_error_missing_ncpmount(self):
-		md = gtk.MessageDialog(self.window, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_ERROR, gtk.BUTTONS_CLOSE, "")
-		md.set_markup(
-"""Das Programm <b>ncpmount</b> konnte nicht gefunden werden. 
-Ist das Paket <b>ncpfs</b> installiert?""")
-		md.format_secondary_markup(
-"""Fuer Ubuntu bis einschliesslich Version 10.04 (Lucid Lynx) sollte man auf folgende Version zurueckgreifen:
+		md = gtk.MessageDialog(self.window, 
+		                       gtk.DIALOG_DESTROY_WITH_PARENT, 
+		                       gtk.MESSAGE_ERROR, 
+		                       gtk.BUTTONS_CLOSE, "")
+		md.set_markup("""Das Programm <b>ncpmount</b> konnte nicht gefunden werden. Ist das Paket <b>ncpfs</b> installiert?""")
+		md.format_secondary_markup("""Fuer Ubuntu bis einschliesslich Version 10.04 (Lucid Lynx) sollte man auf folgende Version zurueckgreifen:
 <b>32 Bit</b>: 
 http://archive.ubuntu.com/ubuntu/pool/universe/n/ncpfs/ncpfs_2.2.6-4ubuntu3_i386.deb
 <b>64 Bit</b>: 
 http://archive.ubuntu.com/ubuntu/pool/universe/n/ncpfs/ncpfs_2.2.6-4ubuntu3_amd64.deb""")
 		md.run()
 		md.destroy()
-		
+	
+	# For checking the existens of ncpmount or other tools
 	def which(self, program):
 		def is_exe(fpath):
 			return os.path.exists(fpath) and os.access(fpath, os.X_OK)
@@ -123,45 +180,65 @@ http://archive.ubuntu.com/ubuntu/pool/universe/n/ncpfs/ncpfs_2.2.6-4ubuntu3_amd6
 		s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 		names = array.array('B', '\0' * bytes)
 		outbytes = struct.unpack('iL', fcntl.ioctl(s.fileno(),
-		                                           0x8912,  # SIOCGIFCONF
-		                                           struct.pack('iL',
-		                                                       bytes,
-		                                                       names.buffer_info()[0])
-		                                           ))[0]
+						                           0x8912,  # SIOCGIFCONF
+						                           struct.pack('iL',
+						                                       bytes,
+						                                       names.buffer_info()[0])
+						                           ))[0]
 		namestr = names.tostring()
 		interfaces = [namestr[i:i+32].split('\0', 1)[0] for i in range(0, outbytes, 32)]
-		print "Found following interfaces: "
+		print "Found interfaces: "
 		print interfaces
 
 		# loop through all interfaces
 		for face in interfaces:
-			if (face != "lo"):		# don't check loopback
+			if face == "lo":		# don't check loopback
+				continue
+			if face[:3] == "eth" or face[:3] == "tun":
 				s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 				ipAddress=socket.inet_ntoa(fcntl.ioctl(s.fileno(),
-				                                       0x8915,
-				                                       struct.pack('256s', face))[20:24])
-				#FIXME: IP check always TRUE!
-				if (cmp(ipAddress[:10], '194.94.155') == 0 or cmp(ipAddress[:7], '172.16.' == 0)):			# HS Regensburg Bibliothek IP
-					print "Using interface " + face + " with IP " + ipAddress
+							                           0x8915,
+							                           struct.pack('256s', face))[20:24])
+				print face + " has " + ipAddress
+				
+				if (ipAddress[:10] == '194.94.155' or  # Internal network (HS) 
+				    ipAddress[:10] == '194.95.104' or  # VPN connection (HS) 
+				    ipAddress[:7]  == '172.16.')    :   # Bibliothek (HS)
+					print "interface " + face + " with IP " + ipAddress + " found"
 					return True
-				else:
-					print "No good interface found"
-					return False
+					
+		print "No good interface found"
+		return False
+			
 
+	# return True if untrusted connection is accepted
 	def warningIPAddress(self):
 		# Returns True if user wants to connect anyway
-		builder = gtk.Builder()
-		builder.add_from_file("diaIPAddressWarning.xml")
-		dia = builder.get_object("diaIPAddressWarning")
-		dia.show_all()
-		if (dia.run() == gtk.RESPONSE_YES):
-			dia.destroy()
+		# builder = gtk.Builder()
+		# builder.add_from_file("diaIPAddressWarning.xml")
+		# dia = builder.get_object("diaIPAddressWarning")
+		# dia.show_all()
+		md = gtk.MessageDialog(parent=None,
+			                      flags=gtk.DIALOG_MODAL,
+			                      type=gtk.MESSAGE_WARNING)
+		md.add_buttons(gtk.STOCK_NO, gtk.RESPONSE_NO,
+		               gtk.STOCK_YES, gtk.RESPONSE_YES)
+		md.set_title("fhk - IP Adresse Warnung")
+		md.set_markup("<big><b>Keine interne IP Adresse</b></big>")
+		md.format_secondary_markup(
+"""Sie haben offenbar keine direkte Verbindung zum Netzwerk der FH/Uni Regensburg. \
+Der Verbindungsversuch ist <b>unsicher</b> und <b>wird fehlschlagen</b>.
+
+Wollen Sie es trotzdem versuchen?""")
+		res = md.run()
+		if (res == gtk.RESPONSE_YES):
+			print "Connecting despite IP warning"
+			md.destroy()
 			return True
 		else:
-			dia.destroy()
+			md.destroy()
 			return False
 
-		return False
 
 	def pathCleanup(self, path):
 		if os.path.exists(path):
@@ -287,6 +364,10 @@ http://archive.ubuntu.com/ubuntu/pool/universe/n/ncpfs/ncpfs_2.2.6-4ubuntu3_amd6
 		
 		# store username for config file
 		self.par.username = self.entryUsername.get_text()
+		
+		if not self.checkIPAddress():
+			if not self.warningIPAddress():
+				return
 
 		success = False
 		for drive in self.par.drives:
@@ -358,12 +439,12 @@ http://archive.ubuntu.com/ubuntu/pool/universe/n/ncpfs/ncpfs_2.2.6-4ubuntu3_amd6
 		for drive in self.par.drives:
 			self.pathCleanup(self.entryPathHandles[drive].get_text())
 
-		tmpError = False
+		drvLeft = ""
 		for drive in self.par.drives:
 			if os.path.ismount(self.entryPathHandles[drive].get_text()):
-				tmpError = True
+				drvLeft += drive + ", "
 
-		if not tmpError: #Wenn kein Fehler aufgetreten ist
+		if drvLeft == "": 
 			self.btnDisconnect.set_sensitive(False)
 			self.btnConnect.set_sensitive(True)
 		else:
@@ -373,9 +454,9 @@ http://archive.ubuntu.com/ubuntu/pool/universe/n/ncpfs/ncpfs_2.2.6-4ubuntu3_amd6
 			                      type=gtk.MESSAGE_WARNING,
 			                      buttons=gtk.BUTTONS_CLOSE,
 			                      message_format=
-"""Laufwerke koennen nicht ausgehaengt werden.
+"""Laufwerke %s koennen nicht ausgehaengt werden.
 Beenden Sie alle Anwendungen die auf die eingehaengten 
-Pfade zugreifen und versuchen Sie es nochmal""")
+Pfade zugreifen und versuchen Sie es nochmal""" % drvLeft)
 			swin=gtk.ScrolledWindow()
 			swin.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
 #			swin.add_with_viewport(view)
@@ -393,37 +474,33 @@ Pfade zugreifen und versuchen Sie es nochmal""")
 			if os.path.ismount( self.par.paths[drive] ):
 				mountedDrives += drive + ", "
 		
-		if not mountedDrives == "" and not self.par.dontAskForUmountOnExit :
-			print mountedDrives + " still mounted"
+		print mountedDrives + " still mounted"
+		if not mountedDrives == "" and not self.par.dontAskUmountBeforeExit:
 			md = gtk.MessageDialog(type=gtk.MESSAGE_QUESTION)
 			md.add_buttons(gtk.STOCK_DISCONNECT, gtk.RESPONSE_ACCEPT, 
 			               gtk.STOCK_NO, gtk.RESPONSE_CANCEL)
 			md.set_title("fhk - Laufwerke nicht getrennt")
-			md.set_markup("<big><b>Laufwerke %s noch sind noch verbunden</b></big>" % mountedDrives)
+			md.set_markup("<big><b>Laufwerke %s sind noch verbunden</b></big>" % mountedDrives)
 			md.format_secondary_text("Sollen die Lauferke vor dem beenden getrennt werden?")
-			
 			ca = md.get_content_area()
-			cb = gtk.CheckButton("Frage nicht wieder nach")
-			cb.set_active(self.par.dontAskForUmountOnExit)
+			cb = gtk.CheckButton("Nicht mehr fragen.")
+			cb.set_active = self.par.dontAskUmountBeforeExit
 			ca.add(cb)
 			md.show_all()
 
 			res = md.run()
 
 			if res == gtk.RESPONSE_ACCEPT:
-				self.on_btn_umount_clicked(None)
-				self.par.umountOnExit = True
-				self.par.dontAskForUmountOnExit = cb.get_active()
-				
+				self.on_btn_umount_clicked(None, None)
+				self.par.dontAskUmountBeforeExit = cb.get_active()
+				self.par.umountBeforeExit = True
 			else:
-				self.par.umountOnExit = False
-				self.par.dontAskForUmountOnExit = cb.get_active()
+				self.par.dontAskUmountBeforeExit = cb.get_active()
+				self.par.umountBeforeExit = False
 			md.destroy()
-			
-		else: 
-			if not mountedDrives == "":
+		else:
+			if not mountedDrives == "" and self.par.umountBeforeExit:
 				self.on_btn_umount_clicked(None)
-
 
 
 	def on_btn_quit_clicked(self, widget, data=None):
@@ -468,17 +545,9 @@ Pfade zugreifen und versuchen Sie es nochmal""")
 	def __init__(self):
 
 		self.builder = gtk.Builder()
-		try:
-			self.builder.add_from_file("window.xml")
-		except:
-			try: 
-				self.builder.add_from_file("src/window.xml")
-			except:
-				print "Could not load window.xml. Wrong path?"
-
+		self.builder.add_from_file("window.xml")
 		# connect signals later, not to interrupt initialization
 		self.window = self.builder.get_object("window")
-		self.window.set_icon_from_file("../fhk.png")
 		self.window.show()
 		self.par = Par()
 		if os.path.isfile(os.path.expanduser('~/.fhk.pkl')) : # if config already exists
