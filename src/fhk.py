@@ -77,6 +77,7 @@ class Par:
 		                  'P': 'fh-kroesus.fh-regensburg.de'}
 		
 		self.dontAskUmountBeforeExit = False
+		self.dontAskIPAdressWarning = False
 		self.umountBeforeExit = False
 
 
@@ -214,10 +215,10 @@ http://archive.ubuntu.com/ubuntu/pool/universe/n/ncpfs/ncpfs_2.2.6-4ubuntu3_amd6
 	# return True if untrusted connection is accepted
 	def warningIPAddress(self):
 		# Returns True if user wants to connect anyway
-		# builder = gtk.Builder()
-		# builder.add_from_file("diaIPAddressWarning.xml")
-		# dia = builder.get_object("diaIPAddressWarning")
-		# dia.show_all()
+
+		if self.par.dontAskIPAdressWarning:
+			return True
+
 		md = gtk.MessageDialog(parent=None,
 			                      flags=gtk.DIALOG_MODAL,
 			                      type=gtk.MESSAGE_WARNING)
@@ -230,12 +231,21 @@ http://archive.ubuntu.com/ubuntu/pool/universe/n/ncpfs/ncpfs_2.2.6-4ubuntu3_amd6
 Der Verbindungsversuch ist <b>unsicher</b> und <b>wird fehlschlagen</b>.
 
 Wollen Sie es trotzdem versuchen?""")
+
+		ca = md.get_content_area()
+		cb = gtk.CheckButton("Nicht mehr fragen.")
+		cb.set_active = self.par.dontAskIPAdressWarning
+		ca.add(cb)
+		md.show_all()
+
 		res = md.run()
 		if (res == gtk.RESPONSE_YES):
 			print "Connecting despite IP warning"
+			self.par.dontAskIPAdressWarning = cb.get_active()
 			md.destroy()
 			return True
 		else:
+			self.par.dontAskIPAdressWarning = cb.get_active()
 			md.destroy()
 			return False
 
@@ -369,8 +379,19 @@ Wollen Sie es trotzdem versuchen?""")
 		if not self.checkIPAddress():
 			if not self.warningIPAddress():
 				return
+		
+		# In case the program crashes because it could not connect maybe
+		# because of a wrong IP adress, reset the setting to warn for 
+		# the invalid IP adress. On the next start the warning will be 
+		# shown
+		originalSetting = self.par.dontAskIPAdressWarning
+		self.par.dontAskIPAdressWarning = False		# will be restored after successful mounting
+		storedConfig = open (os.path.expanduser('~/.fhk.pkl'), 'wb')
+		pickle.dump(self.par, storedConfig)
+		storedConfig.close()
 
 		success = False
+		retcode = 0
 		for drive in self.par.drives:
 			if self.par.mounts[drive]:
 				if not self.pathCreate(self.entryPathHandles[drive].get_text()):
@@ -417,14 +438,24 @@ Wollen Sie es trotzdem versuchen?""")
 						                       "Ein Bug im Programm fhk ist aufgetreten. Sorry!")
 						md.run()
 						md.destroy()
-					continue
+					break
 				# self.checkbuttonHandles[drive].set_active(False)        # commented out for remembering this setting on next start
 				print drive + " mounted"
 
-			if success:
-				self.btnDisconnect.set_sensitive(True)
-				self.entryUsername.set_property("secondary_icon_stock", None)
-				self.entryUsername.set_property("secondary_icon_tooltip_text", "")
+		if success:
+			self.btnDisconnect.set_sensitive(True)
+			self.entryUsername.set_property("secondary_icon_stock", None)
+			self.entryUsername.set_property("secondary_icon_tooltip_text", "")
+			self.par.dontAskIPAdressWarning = originalSetting	# Restore the setting 
+		else:
+			if retcode == 1:
+				md = gtk.MessageDialog(self.window,
+				                       gtk.DIALOG_DESTROY_WITH_PARENT,
+				                       gtk.MESSAGE_ERROR,
+				                       gtk.BUTTONS_CLOSE,
+				                       "Server konnte nicht gefunden werden. Netzwerkverbindung vorhanden?")
+				md.run()
+				md.destroy()
 
 		# gksu "ncpmount -S fh-kroesus -A fh-kroesus.fh-regensburg.de -P $PW -V DATA1/kurs -U fes37620.0.stud.fh-regensburg.de -C -m -p cp850 -y utf8 /media/K/"
 		# ncpmount -V DATA3/kurs -S fh-kroesus -A fh-kroesus.fh-regensburg.de -U fes39774.e-technik.fh-regensburg.de -C -m -r 2 -p cp850  -y utf8 /home/simeon/K/
@@ -457,7 +488,7 @@ Wollen Sie es trotzdem versuchen?""")
 			                      message_format=
 """Laufwerke %s koennen nicht ausgehaengt werden.
 Beenden Sie alle Anwendungen die auf die eingehaengten 
-Pfade zugreifen und versuchen Sie es nochmal""" % drvLeft)
+Pfade zugreifen, warten Sie kurz und versuchen Sie es nochmal""" % drvLeft)
 			swin=gtk.ScrolledWindow()
 			swin.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
 #			swin.add_with_viewport(view)

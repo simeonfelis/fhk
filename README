@@ -29,6 +29,15 @@ http://archive.ubuntu.com/ubuntu/pool/universe/n/ncpfs/ncpfs_2.2.6-4ubuntu3_i386
 http://archive.ubuntu.com/ubuntu/pool/universe/n/ncpfs/ncpfs_2.2.6-4ubuntu3_amd64.deb
 
 
+Wird die Netzwerkverbindung getrennt so lange Laufwerke verbunden sind gibt es 
+Probleme:
+ * Laufwerke können nicht wieder ausgehängt werden
+ * Linux fährt nicht komplett herunter, da es auf die Laufwerke wartet die nicht
+   mehr getrennt werden können
+ * Mit VPN hat man keinen Spaß weil jede Operation ewig dauert und die zwei 
+   oben genannten Fehler sehr wahrscheinlich auftreten
+
+
 Sonstiges:
 ==========
 Es wird eine Uni-Interne IP (VPN) benötigt!
