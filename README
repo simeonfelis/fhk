@@ -1,9 +1,7 @@
 Was ist fhk
 ===========
-Inoffizielle Oberfläche zum einhängen der Novell-Netware Laufwerke F,H,K,P 
-und G an der FH Regensburg.
-
-Diese Programm ist getestet unter Ubuntu 10.10 (Maverick Merkaat)
+Inoffizielle Beta-Version der Grafische Oberfläche zum einhängen der 
+Novell-Netware Laufwerke F,H,K,P und G an der FH Regensburg.
 
 Vorraussetzungen:
 =================
@@ -11,11 +9,21 @@ Vorraussetzungen:
 	pygtk
 	ncpfs
 
+Getestet:
+=========
+
+Ubuntu Lucid (10.04) 32 Bit und 64 Bit
+Ubuntu Maverick (10.10) 32 Bit und 64 Bit
+
 Bekannte Probleme:
 ==================
-In Ubuntu 7.10, 8.04, 8.10, 9.04, 9.10  ist ncpfs fehlerhaft. Siehe Bugreport
-https://bugs.launchpad.net/ubuntu/+source/ncpfs/+bug/140464
-Folgendes Paket funktioniert eingeschränkt:
+Das Paket ncpfs ist in folgenden Versionen von Ubuntu Fehlerhaft:
+Ubuntu 8.04 (Hardy)
+Ubuntu 9.04 (Jaunty)
+Ubuntu 9.10 (Karmic)
+
+Folgendes (veraltes) Paket funktioniert etwas besser:
+32 Bit:
 http://archive.ubuntu.com/ubuntu/pool/universe/n/ncpfs/ncpfs_2.2.6-4ubuntu3_i386.deb
 64 Bit:
 http://archive.ubuntu.com/ubuntu/pool/universe/n/ncpfs/ncpfs_2.2.6-4ubuntu3_amd64.deb
@@ -28,6 +36,7 @@ Es wird eine Uni-Interne IP (VPN) benötigt!
 Ausführen:
 	cd <entpacktes verzeichnis>/fhk/src
 	python fhk.py
+oder Doppelklick auf <entpacktes Verzeichnis>/fhk/src/fhk.py
 
 
 Für Wen?
