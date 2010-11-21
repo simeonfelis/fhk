@@ -78,7 +78,9 @@ class Par:
 		
 		self.dontAskUmountBeforeExit = False
 		self.dontAskIPAdressWarning = False
+		self.connectDespiteWarning = True
 		self.umountBeforeExit = False
+		self.version = 2
 
 
 	# From http://sebthom.de/136-comparing-version-numbers-in-jython-pytho/
@@ -217,7 +219,7 @@ http://archive.ubuntu.com/ubuntu/pool/universe/n/ncpfs/ncpfs_2.2.6-4ubuntu3_amd6
 		# Returns True if user wants to connect anyway
 
 		if self.par.dontAskIPAdressWarning:
-			return True
+			return self.par.connectDespiteWarning
 
 		md = gtk.MessageDialog(parent=None,
 			                      flags=gtk.DIALOG_MODAL,
@@ -242,10 +244,12 @@ Wollen Sie es trotzdem versuchen?""")
 		if (res == gtk.RESPONSE_YES):
 			print "Connecting despite IP warning"
 			self.par.dontAskIPAdressWarning = cb.get_active()
+			self.par.connectDespiteWarning = True
 			md.destroy()
 			return True
 		else:
 			self.par.dontAskIPAdressWarning = cb.get_active()
+			self.par.connectDespiteWarning = False
 			md.destroy()
 			return False
 
@@ -582,12 +586,21 @@ Pfade zugreifen, warten Sie kurz und versuchen Sie es nochmal""" % drvLeft)
 		self.window = self.builder.get_object("window")
 		self.window.show()
 		self.par = Par()
+		self.parTemp = Par()
 		if os.path.isfile(os.path.expanduser('~/.fhk.pkl')) : # if config already exists
 			storedConfig = open (os.path.expanduser('~/.fhk.pkl'), 'rb')
-			self.par = pickle.load(storedConfig)
+			self.parTemp = pickle.load(storedConfig)
+			print "Config Version: %d" %self.parTemp.version
+			print "Program Version: %d" %self.par.version
+			if self.parTemp.version == self.par.version:
+				storedConfig.seek(0)
+				self.par = pickle.load(storedConfig)
+			else:
+				print "Config and Program version not equal, using defaults"
 		else: # create new one
 			storedConfig = open (os.path.expanduser('~/.fhk.pkl'), 'wb')
 			pickle.dump(self.par, storedConfig)
+			print "New config with defaults stored"
 		storedConfig.close()
 
 		# Get some handles to UI
