@@ -485,23 +485,16 @@ Wollen Sie es trotzdem versuchen?""")
 			self.btnConnect.set_sensitive(True)
 		else:
 
-			a = gtk.MessageDialog(parent = None,
-			                      flags=gtk.DIALOG_MODAL,
-			                      type=gtk.MESSAGE_WARNING,
-			                      buttons=gtk.BUTTONS_CLOSE,
-			                      message_format=
-"""Laufwerke %s koennen nicht ausgehaengt werden.
-Beenden Sie alle Anwendungen die auf die eingehaengten 
-Pfade zugreifen, warten Sie kurz und versuchen Sie es nochmal""" % drvLeft)
-			swin=gtk.ScrolledWindow()
-			swin.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-#			swin.add_with_viewport(view)
-			swin.show_all()
+			md = gtk.MessageDialog(type=gtk.MESSAGE_WARNING)
+			md.add_buttons(gtk.STOCK_OK, gtk.RESPONSE_OK)
+#						   gtk.STOCK_YES, gtk.RESPONSE_YES)
+			md.set_title("fhk - Problem beim trennen der Laufwerke")
+			md.set_markup("<big><b>Laufwerke %s koennen nicht getrennt werden.</b></big>" % drvLeft)
+			md.format_secondary_markup("Beenden sie alle Anwendungen, <b>warten Sie kurz</b> und versuchen Sie es nochmal")
 
-			a.vbox.pack_start(swin)
-			a.show()
-			a.run()
-			a.destroy()
+			md.show_all()
+			md.run()
+			md.destroy()
 
 	def askForExistingMounts(self):
 		mountedDrives = ""
@@ -590,11 +583,14 @@ Pfade zugreifen, warten Sie kurz und versuchen Sie es nochmal""" % drvLeft)
 		if os.path.isfile(os.path.expanduser('~/.fhk.pkl')) : # if config already exists
 			storedConfig = open (os.path.expanduser('~/.fhk.pkl'), 'rb')
 			self.parTemp = pickle.load(storedConfig)
-			print "Config Version: %d" %self.parTemp.version
-			print "Program Version: %d" %self.par.version
-			if self.parTemp.version == self.par.version:
-				storedConfig.seek(0)
-				self.par = pickle.load(storedConfig)
+			try:
+				print "Config Version: %d" %self.parTemp.version
+				print "Program Version: %d" %self.par.version
+				if self.parTemp.version == self.par.version:
+					storedConfig.seek(0)
+					self.par = pickle.load(storedConfig)
+			except(AttributeError):
+				print "Config too old, usind defaults"
 			else:
 				print "Config and Program version not equal, using defaults"
 		else: # create new one
