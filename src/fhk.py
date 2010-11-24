@@ -293,6 +293,7 @@ Wollen Sie es trotzdem versuchen?""")
 		
 		shortName = ""
 		groupNumber = ""
+		groupName = ""
 		
 		# check if correct full context for STAFF MEMBER is found
 		exp = re.compile(r"^\.{0,1}\w{3}\d{5}\.[\w|-]+\.fh-regensburg\.de$")
@@ -308,7 +309,12 @@ Wollen Sie es trotzdem versuchen?""")
 			shortName = exp.search(fullNameStaff)
 			shortName = shortName.group(0)
 			
-			print "full context for staff member found"
+			# get the group name: letters after abc12345.
+			exp = re.compile(r"(?<=\w{3}\d{5}\.)([\w|-]+)")
+			groupName = exp.search(fullNameStaff)
+			groupName = groupName.group(0)
+			
+			#print "full context for staff member found"
 		except:
 			fullNameStaff = ""
 		
@@ -320,7 +326,6 @@ Wollen Sie es trotzdem versuchen?""")
 				fullNameStudent = fullNameStudent.group(0)[1:]
 			else:
 				fullNameStudent = fullNameStudent.group(0)
-			print "full context for student member found"
 			
 			# get the short name: 3 letters and 5 digits at the beginning
 			exp = re.compile(r"(^\w{3}\d{5})")
@@ -332,6 +337,8 @@ Wollen Sie es trotzdem versuchen?""")
 			groupNumber = exp.search(fullNameStudent)
 			groupNumber = groupNumber.group(0)
 			
+			#print "full context for student member found"
+			
 		except:
 			fullNameStudent = ""
 		
@@ -342,7 +349,7 @@ Wollen Sie es trotzdem versuchen?""")
 			entryDNSName_G.set_text("fh-mars-user" + groupNumber + ".hs-regensburg.de")
 			entryServer_G.set_text("hs-mars")
 			
-		elif not fullNameStaff == "":
+		elif not fullNameStaff == "" and not groupName == "stud":
 			# Set stuff for STAFF MEMBERS
 			self.checkbuttonHandles["G"].set_property("sensitive", False)
 			self.checkbuttonHandles["G"].set_property("active", False)
@@ -356,6 +363,8 @@ Wollen Sie es trotzdem versuchen?""")
 			
 		# When full context found, enable the Connect button			
 		if fullNameStaff == "" and fullNameStudent == "":
+			# a common error as a student is to forget the single digit after shortName (abc12345.X.stud.fh-....)
+			# this could be interpreted as staff member. to avoid this, this if-clause is introduced 
 			self.btnConnect.set_sensitive(False)
 			self.entryUsername.set_property("primary_icon_stock", "gtk-info")
 			self.entryUsername.set_property("primary_icon_tooltip_text", 
@@ -388,19 +397,20 @@ Wollen Sie es trotzdem versuchen?""")
 		# store username for config file
 		self.par.username = self.entryUsername.get_text()
 		
-		if not self.checkIPAddress():
-			if not self.warningIPAddress():
-				return
+		# IP address warning # ommitted because it dangling
+#		if not self.checkIPAddress():
+#			if not self.warningIPAddress():
+#				return
 		
-		# In case the program crashes because it could not connect maybe
-		# because of a wrong IP adress, reset the setting to warn for 
-		# the invalid IP adress. On the next start the warning will be 
-		# shown
-		originalSetting = self.par.dontAskIPAdressWarning
-		self.par.dontAskIPAdressWarning = False		# will be restored after successful mounting
-		storedConfig = open (os.path.expanduser('~/.fhk.pkl'), 'wb')
-		pickle.dump(self.par, storedConfig)
-		storedConfig.close()
+#		# In case the program crashes because it could not connect maybe
+#		# because of a wrong IP adress, reset the setting to warn for 
+#		# the invalid IP adress. On the next start the warning will be 
+#		# shown
+#		originalSetting = self.par.dontAskIPAdressWarning
+#		self.par.dontAskIPAdressWarning = False		# will be restored after successful mounting
+#		storedConfig = open (os.path.expanduser('~/.fhk.pkl'), 'wb')
+#		pickle.dump(self.par, storedConfig)
+#		storedConfig.close()
 
 		success = False
 		retcode = 0
@@ -458,7 +468,7 @@ Wollen Sie es trotzdem versuchen?""")
 			self.btnDisconnect.set_sensitive(True)
 			self.entryUsername.set_property("primary_icon_stock", None)
 			self.entryUsername.set_property("primary_icon_tooltip_text", "")
-			self.par.dontAskIPAdressWarning = originalSetting	# Restore the setting 
+#			self.par.dontAskIPAdressWarning = originalSetting	# Restore the setting 
 		else:
 			if retcode == 1:
 				md = gtk.MessageDialog(self.window,
@@ -511,7 +521,9 @@ Wollen Sie es trotzdem versuchen?""")
 			if os.path.ismount( self.par.paths[drive] ):
 				mountedDrives += drive + ", "
 		
-		print mountedDrives + " still mounted"
+		if not mountedDrives == "":
+			print mountedDrives + " still mounted"
+
 		if not mountedDrives == "" and not self.par.dontAskUmountBeforeExit:
 			md = gtk.MessageDialog(type=gtk.MESSAGE_QUESTION)
 			md.add_buttons(gtk.STOCK_DISCONNECT, gtk.RESPONSE_ACCEPT, 
@@ -538,6 +550,8 @@ Wollen Sie es trotzdem versuchen?""")
 		else:
 			if not mountedDrives == "" and self.par.umountBeforeExit:
 				self.on_btn_umount_clicked(None)
+		
+		print "GoodBye!"
 
 
 	def on_btn_quit_clicked(self, widget, data=None):
@@ -592,15 +606,16 @@ Wollen Sie es trotzdem versuchen?""")
 			storedConfig = open (os.path.expanduser('~/.fhk.pkl'), 'rb')
 			self.parTemp = pickle.load(storedConfig)
 			try:
-				print "Config Version: %d" %self.parTemp.version
-				print "Program Version: %d" %self.par.version
 				if self.parTemp.version == self.par.version:
 					storedConfig.seek(0)
 					self.par = pickle.load(storedConfig)
+				else:
+					print "Config Version: %d" %self.parTemp.version
+					print "Program Version: %d" %self.par.version
+					print "Config and Program version not equal, using defaults"
 			except(AttributeError):
 				print "Config too old, usind defaults"
-			else:
-				print "Config and Program version not equal, using defaults"
+			
 		else: # create new one
 			storedConfig = open (os.path.expanduser('~/.fhk.pkl'), 'wb')
 			pickle.dump(self.par, storedConfig)
