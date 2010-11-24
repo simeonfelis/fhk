@@ -290,73 +290,81 @@ Wollen Sie es trotzdem versuchen?""")
 		entryVolume_G = self.builder.get_object("entryVolume_G")
 		entryServer_G = self.builder.get_object("entryServer_G")
 		entryDNSName_G = self.builder.get_object("entryDNSName_G")
-
-		# get the short name: include zero or one "." at the beginning, 
-		# 3 letters and 5 digits
-		exp = re.compile(r"(^\.{0,1}\w{3}\d{5})")
-		short_name = exp.search(name)
+		
+		shortName = ""
+		groupNumber = ""
+		
+		# check if correct full context for STAFF MEMBER is found
+		exp = re.compile(r"^\.{0,1}\w{3}\d{5}\.[\w|-]+\.fh-regensburg\.de$")
+		fullNameStaff = exp.search(name)
 		try:
-			if short_name.group(0)[0] == '.':
-				short_name = short_name.group(0)[1:]
+			if fullNameStaff.group(0)[0] == '.':
+				fullNameStaff = fullNameStaff.group(0)[1:]
 			else:
-				short_name = short_name.group(0)
-		except:
-			short_name = ""
+				fullNameStaff = fullNameStaff.group(0)
 
-		# get the single digit after the short name
-		exp = re.compile(r"(?<=\w{3}\d{5}\.)(\d)")
-		group_number = exp.search(name)
-		try:
-			group_number = group_number.group(0)
+			# get the short name: 3 letters and 5 digits at the beginning
+			exp = re.compile(r"(^\w{3}\d{5})")
+			shortName = exp.search(fullNameStaff)
+			shortName = shortName.group(0)
+			
+			print "full context for staff member found"
 		except:
-			group_number = ""
-
-		# get the role.fh-regensburg.de
-		exp = re.compile(r"[\w|-]+\.\w{2}-regensburg.de$")           
-		role = exp.search(name)
-		try:
-			role = role.group(0)
-		except:
-			role = ""
-
-		# get the last context
-		exp = re.compile(r"[f|h][h|s]-regensburg.de$")
-		context = exp.search(name)
-		try:
-			context = context.group(0)
-		except:
-			context = ""
+			fullNameStaff = ""
 		
-		#print "short_name: " + short_name
-		#print "role: " + role
-		#print "group_number " + group_number
-		#print "context: " + context
-
-		entryVolume_G.set_text("user/" + short_name)
+		# check if correct full context for STUDENT is found
+		exp = re.compile(r"^\.{0,1}\w{3}\d{5}\.\d{1}\.stud\.fh-regensburg\.de$")
+		fullNameStudent = exp.search(name)
+		try:
+			if fullNameStudent.group(0)[0] == '.':
+				fullNameStudent = fullNameStudent.group(0)[1:]
+			else:
+				fullNameStudent = fullNameStudent.group(0)
+			print "full context for student member found"
+			
+			# get the short name: 3 letters and 5 digits at the beginning
+			exp = re.compile(r"(^\w{3}\d{5})")
+			shortName = exp.search(fullNameStudent)
+			shortName = shortName.group(0)
+			
+			# get the single digit after the short name
+			exp = re.compile(r"(?<=\w{3}\d{5}\.)(\d)")
+			groupNumber = exp.search(fullNameStudent)
+			groupNumber = groupNumber.group(0)
+			
+		except:
+			fullNameStudent = ""
 		
-		if group_number == "":
+		if not fullNameStudent == "":
+			# Set stuff for STUDENTS
+			self.checkbuttonHandles["G"].set_property("sensitive", True)
+			entryVolume_G.set_text("user" + groupNumber + "/" + groupNumber + "/" + shortName)
+			entryDNSName_G.set_text("fh-mars-user" + groupNumber + ".hs-regensburg.de")
+			entryServer_G.set_text("hs-mars")
+			
+		elif not fullNameStaff == "":
+			# Set stuff for STAFF MEMBERS
 			self.checkbuttonHandles["G"].set_property("sensitive", False)
 			self.checkbuttonHandles["G"].set_property("active", False)
 			entryVolume_G.set_text("")
 			entryDNSName_G.set_text("")
 			entryServer_G.set_text("")
+
 		else:
-			self.checkbuttonHandles["G"].set_property("sensitive", True)
-			entryVolume_G.set_text("user" + group_number + "/" + group_number + "/" + short_name)
-			entryDNSName_G.set_text("fh-mars-user" + group_number + ".hs-regensburg.de")
-			entryServer_G.set_text("hs-mars")
+			# no full context found
+			entryVolume_G.set_text("user/" + shortName) 
 			
 		# When full context found, enable the Connect button			
-		if not role == "" and not short_name == "" and not context == "":
-			self.btnConnect.set_sensitive(True)
-			self.entryUsername.set_property("secondary_icon_stock", None)
-			self.entryUsername.set_property("secondary_icon_tooltip_text", "")
+		if fullNameStaff == "" and fullNameStudent == "":
+			self.btnConnect.set_sensitive(False)
+			self.entryUsername.set_property("primary_icon_stock", "gtk-info")
+			self.entryUsername.set_property("primary_icon_tooltip_text", 
+			                                "Volle Kennung in Form von abc12345.5.stud.fh-regensburg.de")
 			
 		else:
-			#print "No full name context found"
-			self.entryUsername.set_property("secondary_icon_stock", "gtk-info")
-			self.entryUsername.set_property("secondary_icon_tooltip_text", "Volle Kennung in Form von abc12345.5.stud.hs-regensburg.de")
-			self.btnConnect.set_sensitive(False)
+			self.btnConnect.set_sensitive(True)
+			self.entryUsername.set_property("primary_icon_stock", None)
+			self.entryUsername.set_property("primary_icon_tooltip_text", "")
 
 	def on_checkbuttonMounts_toggled(self, widget, data=None):
 		for drive in self.par.drives:
@@ -422,8 +430,8 @@ Wollen Sie es trotzdem versuchen?""")
 						success = True
 					else: 
 						if retcode == 55:
-							self.entryUsername.set_property("secondary_icon_stock", "gtk-cancel")
-							self.entryUsername.set_property("secondary_icon_tooltip_text", "NDS Kennung oder Passwort falsch. Vertippt?")
+							self.entryUsername.set_property("primary_icon_stock", "gtk-cancel")
+							self.entryUsername.set_property("primary_icon_tooltip_text", "NDS Kennung oder Passwort falsch. Vertippt?")
 							break
 
 						print "Returned %s" %retcode
@@ -448,8 +456,8 @@ Wollen Sie es trotzdem versuchen?""")
 
 		if success:
 			self.btnDisconnect.set_sensitive(True)
-			self.entryUsername.set_property("secondary_icon_stock", None)
-			self.entryUsername.set_property("secondary_icon_tooltip_text", "")
+			self.entryUsername.set_property("primary_icon_stock", None)
+			self.entryUsername.set_property("primary_icon_tooltip_text", "")
 			self.par.dontAskIPAdressWarning = originalSetting	# Restore the setting 
 		else:
 			if retcode == 1:

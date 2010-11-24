@@ -76,7 +76,6 @@
                 <property name="is_focus">True</property>
                 <property name="tooltip_text" translatable="yes">In der Form abc12345.6.stud.fh-regensburg.de</property>
                 <property name="invisible_char">•</property>
-                <property name="secondary_icon_stock">gtk-dialog-info</property>
                 <signal name="changed" handler="on_entryUsername_changed"/>
               </object>
               <packing>
