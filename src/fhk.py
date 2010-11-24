@@ -363,8 +363,7 @@ Wollen Sie es trotzdem versuchen?""")
 			
 		# When full context found, enable the Connect button			
 		if fullNameStaff == "" and fullNameStudent == "":
-			# a common error as a student is to forget the single digit after shortName (abc12345.X.stud.fh-....)
-			# this could be interpreted as staff member. to avoid this, this if-clause is introduced 
+			
 			self.btnConnect.set_sensitive(False)
 			self.entryUsername.set_property("primary_icon_stock", "gtk-info")
 			self.entryUsername.set_property("primary_icon_tooltip_text", 
@@ -374,6 +373,11 @@ Wollen Sie es trotzdem versuchen?""")
 			self.btnConnect.set_sensitive(True)
 			self.entryUsername.set_property("primary_icon_stock", None)
 			self.entryUsername.set_property("primary_icon_tooltip_text", "")
+	
+	def on_entryPassword_key_press_event(self, widget, event):
+		if event.hardware_keycode == 104 or event.hardware_keycode == 36:
+			self.btnConnect.emit("clicked")
+			
 
 	def on_checkbuttonMounts_toggled(self, widget, data=None):
 		for drive in self.par.drives:
