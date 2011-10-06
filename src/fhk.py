@@ -22,7 +22,7 @@
 
 import os
 import pickle
-#import pango
+import pango
 import pygtk
 pygtk.require('2.0')
 import gtk
@@ -33,7 +33,7 @@ import struct
 import array
 import re
 #import gnome
-#import gconf
+import gconf
 import sys
 
 class Par:
@@ -400,6 +400,7 @@ Wollen Sie es trotzdem versuchen?""")
 		
 		# store username for config file
 		self.par.username = self.entryUsername.get_text()
+		self.gclient.set_string('/apps/fhk/nds_name', self.entryUsername.get_text())
 		
 		# IP address warning # ommitted because it dangling
 #		if not self.checkIPAddress():
@@ -506,10 +507,51 @@ Wollen Sie es trotzdem versuchen?""")
 			self.btnDisconnect.set_sensitive(False)
 			self.btnConnect.set_sensitive(True)
 		else:
-
+#			label1 = gtk.Label()
+#			label1.set_markup("<big><b>Laufwerke %s koennen nicht getrennt werden.</b></big>" % drvLeft)
+#			label2 = gtk.Label()
+#			label2.set_markup("Beenden sie alle Anwendungen, <b>warten Sie kurz</b> und versuchen Sie es nochmal")
+#			label2.set_line_wrap(True)
+#			exp = gtk.expander_new_with_mnemonic("Weitere Informationen")
+#
+#			tb = gtk.TextBuffer()
+#			
+#			tmpDrives = ""
+#			for drv in self.entryPathHandles:
+#				tmpDrives += "'%s' " %self.entryPathHandles[drv].get_text()
+#			
+#			tmpUsedDrives = ""
+#			tmpError = ""
+#			tmpCall = ["fuser", "-vau", "/home/simeon/K"]
+#			pipe = subprocess.Popen(tmpCall, stdout=subprocess.PIPE)
+#			tmpUsedDrives, tmpError = pipe.communicate()
+#			
+#			tb.set_text(tmpUsedDrives)
+#			tv = gtk.TextView()
+#			tv.modify_font(pango.FontDescription('monospace 10'))
+#			tv.set_buffer(tb)
+#			exp.add(tv)
+#
+#			
+#			dia = gtk.Dialog("fhk - Problem beim trennen der Laufwerke",
+#							self.window,
+#							gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
+#							(gtk.STOCK_DISCONNECT, gtk.RESPONSE_APPLY,
+#							gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
+#			dia.set_size_request(400,200)
+#			
+#			dia.vbox.pack_start(label1)
+#			dia.vbox.pack_start(label2)
+#			dia.vbox.pack_start(exp)
+#			
+#			
+#			dia.show_all()
+#			response = dia.run()
+#			dia.destroy()
+			
+			
 			md = gtk.MessageDialog(type=gtk.MESSAGE_WARNING)
 			md.add_buttons(gtk.STOCK_OK, gtk.RESPONSE_OK)
-#						   gtk.STOCK_YES, gtk.RESPONSE_YES)
 			md.set_title("fhk - Problem beim trennen der Laufwerke")
 			md.set_markup("<big><b>Laufwerke %s koennen nicht getrennt werden.</b></big>" % drvLeft)
 			md.format_secondary_markup("Beenden sie alle Anwendungen, <b>warten Sie kurz</b> und versuchen Sie es nochmal")
@@ -593,6 +635,13 @@ Wollen Sie es trotzdem versuchen?""")
 		storedConfig.close()
 
 		gtk.main_quit()
+	
+	def gconf_cb (self, client, *args, **kwargs):
+		try:
+			filename = self.gclient.get_string('/apps/fhk/nds_name')
+			print "GCONFEVENT" + filename
+		except:
+			print "no gconf-key /apps/fhk/nds_name"
 
 	def main(self, data=None):
 		gtk.main()
@@ -601,6 +650,13 @@ Wollen Sie es trotzdem versuchen?""")
 
 		self.builder = gtk.Builder()
 		self.builder.add_from_file("window.xml")
+		self.gclient = gconf.client_get_default()
+		self.gclient.add_dir('/apps/fhk',
+		                      gconf.CLIENT_PRELOAD_NONE)
+		self.gclient.notify_add('/apps/fhk/nds_name', 
+		                        self.gconf_cb)
+		self.gconf_cb(self.gclient)
+		
 		# connect signals later, not to interrupt initialization
 		self.window = self.builder.get_object("window")
 		self.window.show()
@@ -658,6 +714,11 @@ Wollen Sie es trotzdem versuchen?""")
 
 		#init gui
 		self.entryUsername.set_text(self.par.username)
+		try:
+			self.entryUsername.set_text(self.gclient.get_string('/apps/fhk/nds_name'))
+		except:
+			print "gconf schemas not installed?"
+			
 		self.entryCodepage.set_text(self.par.codepage)
 		self.entryCharset.set_text(self.par.charset)
 		self.btnDisconnect.set_sensitive(False)
